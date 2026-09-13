@@ -5,3 +5,345 @@
 .table-hover tbody tr:hover td {
     color: #fff !important;
 }
+
+/* Corona Dark Pagination */
+.pagination-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 25px;
+}
+
+.pagination {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 0;
+}
+
+.pagination .page-item .page-link {
+    min-width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 10px;
+    border: 1px solid #2c2f3a;
+    border-radius: 6px !important;
+
+    background: #191c24;
+    color: #6c7293;
+
+    font-size: 13px;
+    text-decoration: none;
+
+    transition: all 0.2s ease;
+}
+
+/* Hover */
+.pagination .page-item .page-link:hover {
+    background: #0090e7;
+    border-color: #0090e7;
+    color: #ffffff;
+}
+
+/* Active */
+.pagination .page-item.active .page-link {
+    background: #0090e7;
+    border-color: #0090e7;
+    color: #ffffff;
+}
+
+/* Disabled */
+.pagination .page-item.disabled .page-link {
+    background: #191c24;
+    border-color: #2c2f3a;
+    color: #444856;
+    cursor: not-allowed;
+}
+
+/* Remove focus outline */
+.pagination .page-link:focus {
+    box-shadow: none;
+}
+
+.user-avatar {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: #0090e7;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-avatar i {
+    font-size: 75px;
+    color: #fff;
+}
+
+.user-profile h4 {
+    color: #ffffff;
+}
+
+.user-info-box {
+    background: #191c24;
+    border: 1px solid #2c2f3a;
+    border-radius: 6px;
+    padding: 18px 20px;
+    min-height: 90px;
+}
+
+.info-label {
+    display: block;
+    color: #6c7293;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.info-label i {
+    margin-right: 5px;
+}
+
+.info-value {
+    color: #ffffff;
+    margin: 0;
+    font-size: 15px;
+}
+
+/* =========================================
+   FORM TEXT VISIBILITY - DARK THEME
+   ========================================= */
+
+/* Text input, textarea and select */
+.form-control,
+.form-select {
+    color: #f5f7fb !important;
+}
+
+/* When user types/fills the input */
+.form-control:focus,
+.form-select:focus {
+    color: #ffffff !important;
+}
+
+/* Placeholder */
+.form-control::placeholder {
+    color: #8f96a8 !important;
+    opacity: 1;
+}
+
+/* Select selected value */
+.form-select {
+    color: #f5f7fb !important;
+}
+
+/* Select options */
+.form-select option {
+    background-color: #191c24;
+    color: #f5f7fb;
+}
+
+/* Labels */
+.form-label,
+label {
+    color: #e4e7ec;
+}
+
+/* Disabled input */
+.form-control:disabled,
+.form-select:disabled {
+    color: #777f90 !important;
+}
+
+.form-control,
+.form-select {
+    background-color: #191c24 !important;
+    border: 1px solid #343a46 !important;
+}
+
+.form-control:hover,
+.form-select:hover {
+    border-color: #4a5261 !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: #1d212b !important;
+    border-color: #0090ff !important;
+    /* color: #ffffff !important; */
+    box-shadow: 0 0 0 2px rgba(0, 144, 255, 0.12) !important;
+}
+
+
+/* =========================================
+   BRIGHT TEXT - CORONA DARK THEME
+   ========================================= */
+
+/* Main body text */
+body {
+    color: #e8eaf0;
+}
+
+/* Card titles */
+.card-title,
+.page-title {
+    color: #ffffff !important;
+}
+
+/* Normal paragraph / description */
+.card-description,
+p {
+    color: #bfc5d2 !important;
+}
+
+/* Labels */
+label,
+.form-label {
+    color: #e6e9ef !important;
+}
+
+/* Input text */
+.form-control,
+.form-select,
+textarea {
+    color: #f5f6fa !important;
+}
+
+/* Placeholder */
+.form-control::placeholder,
+textarea::placeholder {
+    color: #929aaa !important;
+    opacity: 1;
+}
+
+/* Table text */
+.table td,
+.table th {
+    color: #e5e8ee !important;
+}
+
+/* Table heading */
+.table thead th {
+    color: #ffffff !important;
+}
+
+/* Small muted text */
+.text-muted {
+    color: #aeb5c3 !important;
+}
+
+
+/* =========================================
+   LINKS
+   ========================================= */
+
+a {
+    color: #bfc5d2;
+    transition: all 0.2s ease;
+}
+
+/* a:hover {
+    color: #0090ff !important;
+} */
+
+
+/* =========================================
+   SIDEBAR
+   ========================================= */
+
+.sidebar .nav .nav-item .nav-link {
+    color: #c8cdd7 !important;
+}
+
+.sidebar .nav .nav-item .nav-link .menu-title {
+    color: #c8cdd7 !important;
+}
+
+.sidebar .nav .nav-item .nav-link i {
+    color: #aeb5c3;
+}
+
+/* Sidebar hover */
+.sidebar .nav .nav-item .nav-link:hover,
+.sidebar .nav .nav-item .nav-link:hover .menu-title {
+    color: #ffffff !important;
+}
+
+
+/* =========================================
+   FORM
+   ========================================= */
+
+.form-control,
+.form-select {
+    background-color: #191c24 !important;
+    border-color: #343a46 !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    color: #ffffff !important;
+    border-color: #0090ff !important;
+}
+
+
+/* Select options */
+.form-select option {
+    background: #191c24;
+    color: #ffffff;
+}
+
+
+/* =========================================
+   USER DETAILS
+   ========================================= */
+
+.info-label {
+    color: #aeb5c3 !important;
+}
+
+.info-value {
+    color: #ffffff !important;
+}
+
+
+/* =========================================
+   BUTTON TEXT
+   ========================================= */
+
+.btn {
+    font-weight: 500;
+}
+
+.btn-dark {
+    color: #e9ebf0 !important;
+}
+
+.btn-dark:hover {
+    color: #ffffff !important;
+}
+
+/* role buttons */
+/* Role Badges */
+
+.role-admin {
+    background-color: #dc3545 !important;
+    color: #ffffff !important;
+}
+
+.role-teacher {
+    background-color: #0090ff !important;
+    color: #ffffff !important;
+}
+
+.role-student {
+    background-color: #00d25b !important;
+    color: #ffffff !important;
+}
+
+.role-default {
+    background-color: #6c7293 !important;
+    color: #ffffff !important;
+}

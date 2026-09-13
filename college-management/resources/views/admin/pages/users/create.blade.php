@@ -15,60 +15,106 @@
             <div class="col-12 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body">
-                        <x-admin.phead title="Users" subtitle="Manage all of users from here.">
+                        <x-admin.phead title="Add User" subtitle="Add a new user from here.">
                             <a href="{{ route('users.index') }}" class="btn btn-warning btn-rounded btn-fw">
                                 <i class="mdi mdi-arrow-left"> </i>
                                 Back to Users</a>
                         </x-admin.phead>
-                       <div class="col-12 grid-margin stretch-card">
-                <div class="card">
-                  <div class="card-body">
-                    <h4 class="card-title">Basic form elements</h4>
-                    <p class="card-description"> Basic form elements </p>
-                    <form class="forms-sample">
-                      <div class="form-group">
-                        <label for="exampleInputName1">Name</label>
-                        <input type="text" class="form-control" id="exampleInputName1" placeholder="Name">
-                      </div>
-                      <div class="form-group">
-                        <label for="exampleInputEmail3">Email address</label>
-                        <input type="email" class="form-control" id="exampleInputEmail3" placeholder="Email">
-                      </div>
-                      <div class="form-group">
-                        <label for="exampleInputPassword4">Password</label>
-                        <input type="password" class="form-control" id="exampleInputPassword4" placeholder="Password">
-                      </div>
-                      <div class="form-group">
-                        <label for="exampleSelectGender">Gender</label>
-                        <select class="form-select" id="exampleSelectGender">
-                          <option>Male</option>
-                          <option>Female</option>
-                        </select>
-                      </div>
-                      <div class="form-group">
-                        <label>File upload</label>
-                        <input type="file" name="img[]" class="file-upload-default">
-                        <div class="input-group col-xs-12 d-flex align-items-center">
-                          <input type="text" class="form-control file-upload-info" disabled="" placeholder="Upload Image">
-                          <span class="input-group-append ms-2">
-                            <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
-                          </span>
+                        @if (session('error'))
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ session('error') }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        @endif
+                        <div class="col-12 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+
+                                    {{-- <h4 class="card-title">Create User</h4> --}}
+                                    <p class="card-description">Fill all the fields for a new user</p>
+
+                                    <form class="forms-sample" action="{{ route('users.store') }}" method="POST">
+                                        @csrf
+
+                                        {{-- Username --}}
+                                        <div class="form-group">
+                                            <label for="username">Username</label>
+                                            <input type="text" class="form-control" id="username" name="name"
+                                                value="{{ old('name') }}" placeholder="Enter username">
+                                            <x-admin.error-msg name="name" />
+
+                                        </div>
+
+                                        {{-- Email --}}
+                                        <div class="form-group">
+                                            <label for="email">Email Address</label>
+                                            <input type="text" class="form-control" id="email" name="email"
+                                                value="{{ old('email') }}" placeholder="Enter email address">
+                                            <x-admin.error-msg name="email" />
+
+                                        </div>
+
+                                        {{-- Role --}}
+                                        <div class="form-group">
+                                            <label for="roleName">Role Name</label>
+                                            <select name="role_id" id="role_id" class="form-control text-white">
+                                                <option value="">Select a role</option>
+
+                                                @foreach ($roles as $item)
+                                                    <option value="{{ $item->id }}" @selected(old('role_id') == $item->id)>
+                                                        {{ $item->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <x-admin.error-msg name="role_id" />
+
+                                        </div>
+
+                                        {{-- Password --}}
+                                        <div class="form-group">
+                                            <label for="password">Password</label>
+                                            <input type="password" class="form-control" id="password" name="password"
+                                                placeholder="Enter password">
+                                            <x-admin.error-msg name="password" />
+
+                                        </div>
+
+                                        {{-- Confirm Password --}}
+                                        <div class="form-group">
+                                            <label for="password_confirmation">Confirm Password</label>
+                                            <input type="password" class="form-control" id="password_confirmation"
+                                                name="password_confirmation" placeholder="Confirm password">
+                                            <x-admin.error-msg name="password_confirmation" />
+
+                                        </div>
+
+                                        {{-- Buttons --}}
+
+                                        <div class="text-right">
+
+                                            <button type="submit" class="btn btn-primary mr-2 ">
+                                                Create User
+                                            </button>
+
+                                            <a href="{{ route('users.index') }}" class="btn btn-dark">
+                                                Cancel
+                                            </a>
+                                        </div>
+
+
+                                    </form>
+
+                                </div>
+                            </div>
                         </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="exampleInputCity1">City</label>
-                        <input type="text" class="form-control" id="exampleInputCity1" placeholder="Location">
-                      </div>
-                      <div class="form-group">
-                        <label for="exampleTextarea1">Textarea</label>
-                        <textarea class="form-control" id="exampleTextarea1" rows="4"></textarea>
-                      </div>
-                      <button type="submit" class="btn btn-primary me-2">Submit</button>
-                      <button class="btn btn-dark">Cancel</button>
-                    </form>
-                  </div>
+                    </div>
                 </div>
-              </div>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
 
 @endsection

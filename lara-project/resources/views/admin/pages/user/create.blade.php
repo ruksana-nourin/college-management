@@ -3,10 +3,17 @@
 @section('title', 'Create User')
 @section('content')
     <x-admin.phead title="Create User" subtitle="Fill out the form below to add a new user to the system.">
-        <a href="{{ route('users.index') }}" class="btn-custom btn-custom-secondary" >
+        <a href="{{ route('users.index') }}" class="btn-custom btn-custom-secondary">
             <i class="bi bi-arrow-left"></i> Back to Users
         </a>
     </x-admin.phead>
+
+    @if (session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
 
     <div class="table-card-custom">
         <!-- Header Controls -->
@@ -37,40 +44,73 @@
         </div>
 
         <div class="card border-light shadow-sm p-4 h-100">
-          <h5 class="card-title mb-4">Basic Fields</h5>
+            <h5 class="card-title mb-4">Basic Fields</h5>
 
-          <!-- Text input -->
-          <div class="mb-3">
-            <label for="basicText" class="form-label-custom">Username</label>
-            <input type="text" class="form-control-custom" id="basicText" placeholder="Enter username">
-          </div>
+            <form action="{{ route('users.store') }}" method="POST">
+                @csrf
+                {{-- @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif --}}
+                {{-- {{ $errors }} --}}
 
-          <!-- Email input -->
-          <div class="mb-3">
-            <label for="basicEmail" class="form-label-custom">Email Address</label>
-            <input type="email" class="form-control-custom" id="basicEmail" placeholder="name@example.com">
-            <span class="text-muted">We'll never share your email with anyone else.</span>
-          </div>
+                <!-- Text input -->
+                <div class="mb-3">
+                    <label for="basicText" class="form-label-custom">Username</label>
+                    <input type="text" name="name" class="form-control-custom" id="basicText" value="{{ old('name') }}"
+                        placeholder="Enter username">
+                    <x-admin.error-msg name="name" />
+                </div>
 
-          <!-- Password input -->
-          <div class="mb-3">
-            <label for="basicPassword" class="form-label-custom">Password</label>
-            <input type="password" class="form-control-custom" id="basicPassword" placeholder="Enter your secure password">
-          </div>
+                <!-- Email input -->
+                <div class="mb-3">
+                    <label for="basicEmail" class="form-label-custom">Email Address</label>
+                    <input type="text" name="email" class="form-control-custom" id="basicEmail" value="{{ old('email') }}"
+                        placeholder="name@example.com">
+                    <div class="text-muted">We'll never share your email with anyone else.</div>
+                    <x-admin.error-msg name="email" />
+                </div>
+                <!-- Role input -->
+                <div class="mb-3">
+                    <label for="basicRole" class="form-label-custom">Role</label>
+                    <select class="form-control-custom" id="basicRole" name="role_id">
+                        <option value="0" selected disabled>Select a role</option>
+                        @foreach ($roles as $item)
 
-          <!-- Disabled State -->
-          <div class="mb-3">
-            <label for="basicDisabled" class="form-label-custom">Disabled Input</label>
-            <input type="text" class="form-control-custom" id="basicDisabled" value="This input field is disabled" disabled="">
-          </div>
+                            <option value="{{ $item->id }}" @selected(old('role_id') == $item->id)>
+                                {{ $item->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <x-admin.error-msg name="role_id" />
+                </div>
 
-          <!-- Readonly State -->
-          <div class="mb-0">
-            <label for="basicReadonly" class="form-label-custom">Read-only Input</label>
-            <input type="text" class="form-control-custom" id="basicReadonly" value="This field is read-only" readonly="">
-          </div>
+                <!-- Password input -->
+                <div class="mb-3">
+                    <label for="basicPassword" class="form-label-custom">Password</label>
+                    <input type="password" name="password" class="form-control-custom" id="basicPassword"
+                        placeholder="Enter your secure password">
+                    <x-admin.error-msg name="password" />
+                </div>
+                <!-- Confirm Password input -->
+                <div class="mb-3">
+                    <label for="basicConfirmPassword" class="form-label-custom">Confirm Password</label>
+                    <input type="password" name="password_confirmation" class="form-control-custom"
+                        id="basicConfirmPassword" placeholder="Confirm your secure password">
+                    <x-admin.error-msg name="password_confirmation" />
+                </div>
+                <div class="mb-3 text-end">
+                    <button type="submit" class="btn-custom btn-custom-secondary">Create User</button>
+                </div>
+            </form>
         </div>
 
-       
+
+
     </div>
 @endsection
