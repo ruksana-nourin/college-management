@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+
 #[Fillable(['name', 'code', 'duration', 'department_id', 'description'])]
 
 class Course extends Model
@@ -14,5 +15,10 @@ class Course extends Model
     public function department()
     {
         return $this->belongsTo(Department::class);
+    }
+
+    public function academicClasses()
+    {
+        return $this->hasMany(AcademicClass::class);
     }
 }

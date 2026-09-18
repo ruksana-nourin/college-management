@@ -109,36 +109,59 @@
                 </ul>
             </div>
         </li>
-        <li class="nav-item menu-items">
-            <a class="nav-link" data-toggle="collapse" href="#academic" aria-expanded="false"
-                aria-controls="ui-basic">
+        <li
+            class="nav-item 
+                    {{ request()->routeIs('departments.*', 'courses.*', 'academic-classes.*','sections.*', 'groups.*','academic-sessions.*','semesters.*') ? 'active' : '' }}">
+            <a class="nav-link" data-toggle="collapse" href="#academic"
+                aria-expanded="{{ request()->routeIs('departments.*', 'courses.*', 'academic-classes.*','sections.*', 'groups.*','academic-sessions.*','semesters.*') ? 'true' : 'false' }}"
+                aria-controls="academic">
                 <span class="menu-icon">
 
                     {{-- <i class="mdi mdi-account-multiple"></i> --}}
-                    <i class="mdi mdi-file-document-box"></i>
+                    <i class="mdi mdi-school menu-icon"></i>
                 </span>
                 <span class="menu-title">Academic</span>
                 <i class="menu-arrow"></i>
 
 
             </a>
-            <div class="collapse" id="academic">
+
+            <div class="collapse {{ request()->routeIs(
+                                            'departments.*', 
+                                            'courses.*', 
+                                            'academic-classes.*',
+                                            'sections.*', 
+                                            'groups.*',
+                                            'academic-sessions.*',
+                                            'semesters.*') ? 'show' : '' }}" id="academic">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="{{ route('departments.index') }}">Department</a>
+                    <li class="nav-item {{ request()->routeIs('departments.*') ? 'active' : '' }}"> <a
+                            class="nav-link" href="{{ route('departments.index') }}">Department</a>
                     </li>
-                    <li class="nav-item"> <a class="nav-link" href="{{ route('courses.index') }}">Courses</a>
+                    <li class="nav-item {{ request()->routeIs('courses.*') ? 'active' : '' }}"> <a class="nav-link"
+                            href="{{ route('courses.index') }}">Courses</a>
                     </li>
-                    <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Subjects</a>
+                    <li class="nav-item {{ request()->routeIs('academic-classes.*') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('academic-classes.index') }}">Classes</a>
                     </li>
-                    <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Classes</a>
+                    <li class="nav-item {{ request()->routeIs('sections.*') ? 'active' : '' }}"> 
+                        <a class="nav-link" href="{{ route('sections.index') }}">sections</a>
                     </li>
-                    <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">sections</a>
+                    <li class="nav-item {{ request()->routeIs('groups.*') ? 'active' : '' }}"> 
+                        <a class="nav-link" href="{{ route('groups.index') }}">Groups</a>
+                    </li>
+                    <li class="nav-item {{ request()->routeIs('academic-sessions.*') ? 'active' : '' }}"> 
+                        <a class="nav-link" href="{{ route('academic-sessions.index') }}">Academic Sessions</a>
+                    </li>
+                    <li class="nav-item {{ request()->routeIs('semesters.*') ? 'active' : '' }}"> 
+                        <a class="nav-link" href="{{ route('semesters.index') }}">Semesters</a>
                     </li>
                 </ul>
             </div>
         </li>
 
-        <li class="nav-item menu-items">
+
+        <li class="nav-item menu-items {{ request()->routeIs('users.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('users.index') }}">
                 <span class="menu-icon">
                     <i class="mdi mdi-account"></i>

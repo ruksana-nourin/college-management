@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-// use App\Models\Brand;
-// use App\Models\Category;
-// use App\Models\Product;
-// use App\Models\User;
+use App\Models\Brand;
+use App\Models\Category;
+use App\Models\Product;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -29,7 +29,6 @@ class DatabaseSeeder extends Seeder
         //     ['name' => 'Sales person'],
         //     ['name' => 'Editor'],
         //     ['name' => 'Vendor'],
-        //     ['name' => 'Guest'],
         // ]);
         // Brand::factory(5)->create();
         // Category::factory()->createMany([
@@ -38,14 +37,7 @@ class DatabaseSeeder extends Seeder
         //     ['name' => 'Glasses'],
         //     ['name' => 'Shoes'],
         // ]);
-        // Brand::factory(5)->createMany([
-        //     ['name' => 'Gucci'],
-        //     ['name' => 'Louis Vuitton'],
-        //     ['name' => 'Chanel'],
-        //     ['name' => 'Rolex'],
-        //     ['name' => 'Pandora'],
-        // ]);
-        // Product::factory(30)->create();
+        Product::factory(30)->create();
 
     }
 }

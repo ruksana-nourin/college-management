@@ -1,7 +1,13 @@
 <?php
 
+use App\Http\Controllers\AcademicClassController;
+use App\Http\Controllers\AcademicSessionController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\GroupController;
+use App\Http\Controllers\SectionController;
+use App\Http\Controllers\SemesterController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +31,12 @@ Route::get('/dashboard', function () {
 Route::resource('users', UserController::class);
 Route::resource('departments', DepartmentController::class);
 Route::resource('courses', CourseController::class);
+Route::resource('academic-classes', AcademicClassController::class);
+Route::resource('sections', SectionController::class);
+Route::resource('groups', GroupController::class);
+Route::resource('academic-sessions', AcademicSessionController::class);
+Route::resource('semesters', SemesterController::class);
+Route::resource('students', StudentController::class);
 
 
 //Authentication

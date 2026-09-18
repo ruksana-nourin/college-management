@@ -11,19 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('departments', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->unique();
-            $table->string('code')->unique();
-            $table->timestamps();
+        Schema::table('sections', function (Blueprint $table) {
+            $table->unique(
+                ['academic_class_id', 'name'],
+                'sections_academic_class_name_unique'
+            );
         });
     }
+
 
     /**
      * Reverse the migrations.
      */
+   
     public function down(): void
     {
-        Schema::dropIfExists('departments');
+        Schema::table('sections', function (Blueprint $table) {
+            $table->dropUnique('sections_academic_class_name_unique');
+        });
     }
 };

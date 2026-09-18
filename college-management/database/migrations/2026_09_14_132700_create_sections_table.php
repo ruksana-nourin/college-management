@@ -10,20 +10,26 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-        Schema::create('departments', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->unique();
-            $table->string('code')->unique();
-            $table->timestamps();
-        });
-    }
+{
+    Schema::create('sections', function (Blueprint $table) {
+        $table->id();
+
+        $table->bigInteger('academic_class_id');
+
+        $table->string('name');
+        $table->string('code');
+
+        $table->text('description')->nullable();
+
+        $table->timestamps();
+    });
+}
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('departments');
+        Schema::dropIfExists('sections');
     }
 };

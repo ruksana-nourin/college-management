@@ -1,3 +1,11 @@
+{{-- sidebar menu-active --}}
+@php
+  function activeLink($route_name)
+  {
+    return request()->routeIs("$route_name") ? 'active' : "";
+  }
+@endphp
+
 <div class="sidebar-wrapper" id="sidebar">
   <!-- Brand Logo / Identity -->
   <a href="index.html" class="sidebar-brand">
@@ -12,7 +20,11 @@
       <div class="sidebar-menu-title">Menu</div>
       <ul class="sidebar-menu-list">
         <li class="sidebar-menu-item">
-          <a href="{{ route('dashboard') }}" class="sidebar-menu-link active" id="menu-overview" title="Overview">
+          <a href="{{ route('dashboard') }}"
+            {{-- class="sidebar-menu-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" id="menu-overview"
+            title="Overview"> --}}
+            class="sidebar-menu-link {{ activeLink('dashboard') }}" id="menu-overview"
+            title="Overview">
             <i class="bi bi-grid-fill"></i>
             <span>Dashboard</span>
           </a>
@@ -24,13 +36,21 @@
       <div class="sidebar-menu-title">System</div>
       <ul class="sidebar-menu-list">
         <li class="sidebar-menu-item">
-          <a href="{{ route('users.index') }}" class="sidebar-menu-link" id="menu-blankpage" title="Blank Page">
+          <a href="{{ route('users.index') }}"
+            {{-- class="sidebar-menu-link {{ request()->routeIs('users*') ? 'active' : '' }}" id="menu-blankpage"
+            title="Blank Page"> --}}
+            class="sidebar-menu-link {{ activeLink('users*') }}" id="menu-blankpage"
+            title="Blank Page">
             <i class="bi bi-people"></i>
             <span>Users</span>
           </a>
         </li>
         <li class="sidebar-menu-item">
-          <a href="{{ route('products.index') }}" class="sidebar-menu-link" id="menu-blankpage" title="Blank Page">
+          <a href="{{ route('products.index') }}"
+            {{-- class="sidebar-menu-link {{ request()->routeIs('products*') ? 'active' : '' }}" id="menu-blankpage"
+            title="Blank Page"> --}}
+            class="sidebar-menu-link {{ activeLink('products*') }}" id="menu-blankpage"
+            title="Blank Page">
             <i class="bi bi-cart"></i>
             <span>Products</span>
           </a>

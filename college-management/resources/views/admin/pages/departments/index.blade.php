@@ -139,18 +139,19 @@
 
 {{-- Delete Modal --}}
 
-<x-admin.modal id="modalDelete" title="Delete Department">
+```blade
+<x-admin.modal id="modalDelete" title="Delete Section">
 
     <div class="text-center">
 
         <i class="bi bi-trash fs-1 text-danger"></i>
 
         <p class="mt-2">
-            Are you sure you want to delete this department?
+            Are you sure you want to delete this section?
         </p>
 
         <span class="name fw-bold badge border border-danger text-danger py-2 px-3">
-            Department
+            Section
         </span>
 
         <hr>
@@ -176,6 +177,8 @@
     </div>
 
 </x-admin.modal>
+```
+
 
 @endsection
 

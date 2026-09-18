@@ -106,11 +106,11 @@
                 <div class="d-flex justify-content-center gap-1">
                   <a href="{{ route('users.show', ['user' => $item->id]) }}" class="table-btn-action"
                     title="View details"><i class="bi bi-eye"></i></a>
-                  <a href="{{ route('users.edit', ['user' => $item->id]) }}" class="table-btn-action" title="Edit user"><i
+                  <a href="{{ route('users.edit', ['user' => $item->id]) }}" class="table-btn-action" title="Edit product"><i
                       class="bi bi-pencil"></i></a>
 
                   <button type="button" class="table-btn-action delete" data-id="{{ $item->id }}"
-                    data-name="{{ $item->name }}" data-bs-toggle="modal" data-bs-target="#modalDelete" title="Delete row">
+                    data-name="{{ $item->name }}" data-bs-toggle="modal" data-bs-target="#modalDelete" title="Delete product">
                     <i class="bi bi-trash"></i>
                   </button>
 
@@ -127,7 +127,7 @@
     <!-- Footer Controls / Pagination -->
     <div class="table-footer-control">
 
-      {{-- {{ $Users->links() }}
+      {{-- {{ $Products->links() }}
 
     </div>
   </div>
@@ -249,8 +249,8 @@
         let name = this.dataset.name;
         // alert(id);
         document.querySelector('#modalDelete .name').innerText = name;
-        // document.querySelector('#modalDelete form').action = '/users/' + id;
-        document.querySelector('#modalDelete form').action = `{{ route('users.destroy', ['user' => ':id']) }}`.replace(':id', id);
+        // document.querySelector('#modalDelete form').action = '/products/' + id;
+        document.querySelector('#modalDelete form').action = `{{ route('products.destroy', ['product' => ':id']) }}`.replace(':id', id);
       })
     })
   </script>
