@@ -28,4 +28,8 @@ class AcademicSession extends Model
     {
         return $this->hasMany(Semester::class);
     }
+    public function feePayments()
+    {
+        return $this->hasMany(FeePayment::class);
+    }
 }

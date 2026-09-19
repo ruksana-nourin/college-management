@@ -42,123 +42,135 @@ class SemesterController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-{
-    $request->validate([
-        'academic_session_id' => 'required|exists:academic_sessions,id',
+    {
+        $request->validate([
+            'academic_session_id' => 'required|exists:academic_sessions,id',
 
-        'name' => [
-            'required',
-            'string',
-            'max:255',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
 
-            Rule::unique('semesters', 'name')
-                ->where(function ($query) use ($request) {
-                    return $query->where(
-                        'academic_session_id',
-                        $request->academic_session_id
-                    );
-                }),
-        ],
+                Rule::unique('semesters', 'name')
+                    ->where(function ($query) use ($request) {
+                        return $query->where(
+                            'academic_session_id',
+                            $request->academic_session_id
+                        );
+                    }),
+            ],
 
-        'start_date' => 'required|date',
+            'start_date' => 'required|date',
 
-        'end_date' => 'required|date|after:start_date',
+            'end_date' => 'required|date|after:start_date',
 
-        'description' => 'nullable|string',
-    ]);
+            'description' => 'nullable|string',
+        ]);
 
-    Semester::create([
-        'academic_session_id' => $request->academic_session_id,
-        'name' => $request->name,
-        'start_date' => $request->start_date,
-        'end_date' => $request->end_date,
-        'description' => $request->description,
-    ]);
+        Semester::create([
+            'academic_session_id' => $request->academic_session_id,
+            'name' => $request->name,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'description' => $request->description,
+        ]);
 
-    return redirect()
-        ->route('semesters.index')
-        ->with('success', 'Semester created successfully.');
-}
+        return redirect()
+            ->route('semesters.index')
+            ->with('success', 'Semester created successfully.');
+    }
 
     /**
      * Display the specified resource.
      */
-   public function show(Semester $semester)
-{
-    $semester->load('academicSession');
+    public function show(Semester $semester)
+    {
+        $semester->load('academicSession');
 
-    return view(
-        'admin.pages.semesters.show',
-        compact('semester')
-    );
-}
+        return view(
+            'admin.pages.semesters.show',
+            compact('semester')
+        );
+    }
 
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(Semester $semester)
-{
-    $academicSessions = AcademicSession::orderBy('start_date', 'desc')
-        ->get();
+    {
+        $academicSessions = AcademicSession::orderBy('start_date', 'desc')
+            ->get();
 
-    return view(
-        'admin.pages.semesters.edit',
-        compact('semester', 'academicSessions')
-    );
-}
+        return view(
+            'admin.pages.semesters.edit',
+            compact('semester', 'academicSessions')
+        );
+    }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Semester $semester)
-{
-    $request->validate([
-        'academic_session_id' => 'required|exists:academic_sessions,id',
+    {
+        $request->validate([
+            'academic_session_id' => 'required|exists:academic_sessions,id',
 
-        'name' => [
-            'required',
-            'string',
-            'max:255',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
 
-            Rule::unique('semesters', 'name')
-                ->where(function ($query) use ($request) {
-                    return $query->where(
-                        'academic_session_id',
-                        $request->academic_session_id
-                    );
-                })
-                ->ignore($semester->id),
-        ],
+                Rule::unique('semesters', 'name')
+                    ->where(function ($query) use ($request) {
+                        return $query->where(
+                            'academic_session_id',
+                            $request->academic_session_id
+                        );
+                    })
+                    ->ignore($semester->id),
+            ],
 
-        'start_date' => 'required|date',
+            'start_date' => 'required|date',
 
-        'end_date' => 'required|date|after:start_date',
+            'end_date' => 'required|date|after:start_date',
 
-        'description' => 'nullable|string',
-    ]);
+            'description' => 'nullable|string',
+        ]);
 
-    $semester->update([
-        'academic_session_id' => $request->academic_session_id,
-        'name' => $request->name,
-        'start_date' => $request->start_date,
-        'end_date' => $request->end_date,
-        'description' => $request->description,
-    ]);
+        $semester->update([
+            'academic_session_id' => $request->academic_session_id,
+            'name' => $request->name,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'description' => $request->description,
+        ]);
 
-    return redirect()
-        ->route('semesters.index')
-        ->with('success', 'Semester updated successfully.');
-}
+        return redirect()
+            ->route('semesters.index')
+            ->with('success', 'Semester updated successfully.');
+    }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Semester $semester)
-{
-    $semester->delete();
+    {
 
-    return redirect()
-        ->route('semesters.index')
-        ->with('success', 'Semester deleted successfully.');
-}
+        if ($semester->feeStructures()->exists()) {
+
+            return redirect()
+                ->route('semesters.index')
+                ->with(
+                    'error',
+                    'This semester cannot be deleted because fee structures exist for it.'
+                );
+        }
+
+
+        $semester->delete();
+
+        return redirect()
+            ->route('semesters.index')
+            ->with('success', 'Semester deleted successfully.');
+    }
 }

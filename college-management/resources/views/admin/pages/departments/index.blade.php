@@ -139,7 +139,6 @@
 
 {{-- Delete Modal --}}
 
-```blade
 <x-admin.modal id="modalDelete" title="Delete Section">
 
     <div class="text-center">
@@ -177,7 +176,7 @@
     </div>
 
 </x-admin.modal>
-```
+
 
 
 @endsection

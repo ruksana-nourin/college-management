@@ -23,8 +23,8 @@ use Illuminate\Database\Eloquent\Model;
     'group_id',
     'academic_session_id',
     'admission_date',
-    'gurdian_name',
-    'gurdian_phone',
+    'guardian_name',
+    'guardian_phone',
     'student_status_id',
 ])]
 class Student extends Model
@@ -71,5 +71,9 @@ class Student extends Model
     public function studentStatus()
     {
         return $this->belongsTo(StudentStatus::class);
+    }
+    public function feePayments()
+    {
+        return $this->hasMany(FeePayment::class);
     }
 }
