@@ -10,6 +10,7 @@ use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+
 class FeePaymentController extends Controller
 {
     /**
@@ -60,165 +61,160 @@ class FeePaymentController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-{
-    $validated = $request->validate([
-        'student_id' => [
-            'required',
-            'exists:students,id',
+    {
+        $request->validate([
+            'student_id' => [
+                'required',
+                'exists:students,id',
+            ],
+
+            'academic_session_id' => [
+                'required',
+                'exists:academic_sessions,id',
+            ],
+
+            'semester_id' => [
+                'required',
+                'exists:semesters,id',
+                function ($attribute, $value, $fail) use ($request) {
+
+                    $semester = Semester::find($value);
+
+                    if (
+                        ! $semester ||
+                        $semester->academic_session_id != $request->academic_session_id
+                    ) {
+                        $fail(
+                            'The selected semester does not belong to the selected academic session.'
+                        );
+                    }
+                },
+            ],
+
+            'payment_date' => [
+                'required',
+                'date',
         ],
 
-        'academic_session_id' => [
-            'required',
-            'exists:academic_sessions,id',
+            'payment_amount' => [
+                'required',
+                'numeric',
+                'min:0.01',
         ],
 
-        'semester_id' => [
-            'required',
-            'exists:semesters,id',
+            'payment_details' => [
+                'required',
+                'array',
         ],
 
-        'payment_date' => [
-            'required',
-            'date',
+            'payment_details.*' => [
+                'numeric',
+                'min:0',
         ],
-
-        'payment_amount' => [
-            'required',
-            'numeric',
-            'min:0.01',
-        ],
-
-        'payment_details' => [
-            'required',
-            'array',
-        ],
-
-        'payment_details.*' => [
-            'numeric',
-            'min:0',
-        ],
-    ]);
-
-    DB::transaction(function () use ($validated) {
+        ]);
 
         /*
         |--------------------------------------------------------------------------
-        | 1. Check Semester belongs to selected Academic Session
+        | Get Fee Structures
         |--------------------------------------------------------------------------
         */
 
-        $semester = Semester::where('id', $validated['semester_id'])
-            ->where(
-                'academic_session_id',
-                $validated['academic_session_id']
-            )
-            ->first();
+        $semester = Semester::find($request->semester_id);
 
-        if (!$semester) {
-            abort(
-                422,
-                'The selected semester does not belong to the selected academic session.'
-            );
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | 2. Get Fee Structures
-        |--------------------------------------------------------------------------
-        */
-
-        $feeStructures = $semester->feeStructures()
-            ->get();
-
+        $feeStructures = $semester->feeStructures()->get();
 
         if ($feeStructures->isEmpty()) {
-            abort(
-                422,
-                'No fee structure found for the selected semester.'
-            );
-        }
 
+            return back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'No fee structure found for the selected semester.'
+                );
+        }
 
         /*
         |--------------------------------------------------------------------------
-        | 3. Calculate Total Fee
+        | Calculate Total Fee
         |--------------------------------------------------------------------------
         */
 
         $totalAmount = $feeStructures->sum('amount');
 
-
         /*
         |--------------------------------------------------------------------------
-        | 4. Calculate Previous Paid
+        | Calculate Previous Paid
         |--------------------------------------------------------------------------
         */
 
         $previousPaid = FeePayment::where(
             'student_id',
-            $validated['student_id']
+            $request->student_id
         )
             ->where(
                 'academic_session_id',
-                $validated['academic_session_id']
+                $request->academic_session_id
             )
             ->where(
                 'semester_id',
-                $validated['semester_id']
+                $request->semester_id
             )
             ->sum('payment_amount');
 
-
         /*
         |--------------------------------------------------------------------------
-        | 5. Calculate Current Due
+        | Calculate Current Due
         |--------------------------------------------------------------------------
         */
 
-        $currentDue = $totalAmount - $previousPaid;
-
-        if ($currentDue < 0) {
-            $currentDue = 0;
-        }
-
+        $currentDue = max(
+            $totalAmount - $previousPaid,
+            0
+        );
 
         /*
         |--------------------------------------------------------------------------
-        | 6. Check Current Payment
+        | Payment Amount
         |--------------------------------------------------------------------------
         */
 
-        $paymentAmount = $validated['payment_amount'];
+        $paymentAmount = $request->payment_amount;
+
+        /*
+        |--------------------------------------------------------------------------
+        | Check Payment Amount
+        |--------------------------------------------------------------------------
+        */
 
         if ($paymentAmount > $currentDue) {
-            abort(
-                422,
-                'Payment amount cannot be greater than the current due amount.'
-            );
-        }
 
+            return back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Payment amount cannot be greater than the current due amount. Current due: '.
+                    number_format($currentDue, 2)
+                );
+        }
 
         /*
         |--------------------------------------------------------------------------
-        | 7. Calculate New Due
+        | Calculate Due
         |--------------------------------------------------------------------------
         */
 
-        $dueAmount = $currentDue - $paymentAmount;
-
-        if ($dueAmount < 0) {
-            $dueAmount = 0;
-        }
-
+        $dueAmount = max(
+            $currentDue - $paymentAmount,
+            0
+        );
 
         /*
         |--------------------------------------------------------------------------
-        | 8. Validate Category-wise Payment
+        | Validate Category-wise Payment
         |--------------------------------------------------------------------------
         */
 
-        $paymentDetails = $validated['payment_details'];
+        $paymentDetails = $request->payment_details;
 
         $detailTotal = 0;
 
@@ -227,100 +223,97 @@ class FeePaymentController extends Controller
             $categoryId = $feeStructure->fee_category_id;
 
             $categoryPayment =
-                $paymentDetails[$categoryId] ?? 0;
-
-            $categoryPayment = (float) $categoryPayment;
+                (float) ($paymentDetails[$categoryId] ?? 0);
 
             /*
-            | Previous paid for this category
+            | Previous Paid For Category
             */
 
             $categoryPreviousPaid =
                 FeePaymentDetail::whereHas(
                     'feePayment',
-                    function ($query) use ($validated) {
+                    function ($query) use ($request) {
 
                         $query->where(
                             'student_id',
-                            $validated['student_id']
+                            $request->student_id
                         )
                             ->where(
                                 'academic_session_id',
-                                $validated['academic_session_id']
+                                $request->academic_session_id
                             )
                             ->where(
                                 'semester_id',
-                                $validated['semester_id']
+                                $request->semester_id
                             );
                     }
                 )
-                ->where(
-                    'fee_category_id',
-                    $categoryId
-                )
-                ->sum('amount');
-
+                    ->where(
+                        'fee_category_id',
+                        $categoryId
+                    )
+                    ->sum('amount');
 
             /*
-            | Current category due
+            | Current Category Due
             */
 
-            $categoryDue =
-                $feeStructure->amount
-                - $categoryPreviousPaid;
-
-            if ($categoryDue < 0) {
-                $categoryDue = 0;
-            }
-
+            $categoryDue = max(
+                $feeStructure->amount - $categoryPreviousPaid,
+                0
+            );
 
             /*
-            | Category payment cannot exceed category due
+            | Check Category Payment
             */
 
             if ($categoryPayment > $categoryDue) {
-                abort(
-                    422,
-                    'Payment for a fee category cannot be greater than its due amount.'
-                );
-            }
 
+                return back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        'Payment for a fee category cannot be greater than its due amount.'
+                    );
+            }
 
             $detailTotal += $categoryPayment;
         }
 
-
         /*
         |--------------------------------------------------------------------------
-        | 9. Category Total must equal Payment Amount
+        | Category Total Check
         |--------------------------------------------------------------------------
         */
 
-        if (round($detailTotal, 2) != round($paymentAmount, 2)) {
+        if (
+            round($detailTotal, 2) !=
+            round($paymentAmount, 2)
+        ) {
 
-            abort(
-                422,
-                'Category-wise payment total must match the payment amount.'
-            );
+            return back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Category-wise payment total must match the payment amount.'
+                );
         }
-
 
         /*
         |--------------------------------------------------------------------------
-        | 10. Generate Receipt Number
+        | Generate Receipt Number
         |--------------------------------------------------------------------------
         */
 
         $receiptNo =
-            'REC-' .
-            now()->format('YmdHis') .
-            '-' .
+            'REC-'.
+            now()->format('YmdHis').
+            '-'.
             strtoupper(Str::random(4));
-
 
         /*
         |--------------------------------------------------------------------------
-        | 11. Create Fee Payment
+        | Create Fee Payment
         |--------------------------------------------------------------------------
         */
 
@@ -328,32 +321,24 @@ class FeePaymentController extends Controller
 
             'receipt_no' => $receiptNo,
 
-            'student_id' =>
-                $validated['student_id'],
+            'student_id' => $request->student_id,
 
-            'academic_session_id' =>
-                $validated['academic_session_id'],
+            'academic_session_id' => $request->academic_session_id,
 
-            'semester_id' =>
-                $validated['semester_id'],
+            'semester_id' => $request->semester_id,
 
-            'payment_date' =>
-                $validated['payment_date'],
+            'payment_date' => $request->payment_date,
 
-            'total_amount' =>
-                $totalAmount,
+            'total_amount' => $totalAmount,
 
-            'payment_amount' =>
-                $paymentAmount,
+            'payment_amount' => $paymentAmount,
 
-            'due_amount' =>
-                $dueAmount,
+            'due_amount' => $dueAmount,
         ]);
-
 
         /*
         |--------------------------------------------------------------------------
-        | 12. Create Fee Payment Details
+        | Create Payment Details
         |--------------------------------------------------------------------------
         */
 
@@ -364,40 +349,35 @@ class FeePaymentController extends Controller
 
             $categoryPayment =
                 (float) (
-                    $paymentDetails[$categoryId]
-                    ?? 0
+                    $paymentDetails[$categoryId] ?? 0
                 );
-
-
-            /*
-            | Save only categories where payment > 0
-            */
 
             if ($categoryPayment > 0) {
 
                 FeePaymentDetail::create([
 
-                    'fee_payment_id' =>
-                        $feePayment->id,
+                    'fee_payment_id' => $feePayment->id,
 
-                    'fee_category_id' =>
-                        $categoryId,
+                    'fee_category_id' => $categoryId,
 
-                    'amount' =>
-                        $categoryPayment,
+                    'amount' => $categoryPayment,
                 ]);
             }
         }
-    });
 
+        /*
+        |--------------------------------------------------------------------------
+        | Success
+        |--------------------------------------------------------------------------
+        */
 
-    return redirect()
-        ->route('fee-payments.index')
-        ->with(
-            'success',
-            'Fee payment created successfully.'
-        );
-}
+        return redirect()
+            ->route('fee-payments.index')
+            ->with(
+                'success',
+                'Fee payment created successfully.'
+            );
+    }
 
     /**
      * Display the specified resource.
@@ -449,6 +429,7 @@ class FeePaymentController extends Controller
 
         return response()->json($feeStructures);
     }
+
     public function getPreviousPayment(
         $student,
         $academicSession,
@@ -489,38 +470,38 @@ class FeePaymentController extends Controller
         );
     }
 
-    public function getPreviousPaymentDetails(
-        $student,
-        $academicSession,
-        $semester
-    ) {
-        $previousPayments = FeePaymentDetail::whereHas(
-            'feePayment',
-            function ($query) use (
-                $student,
-                $academicSession,
-                $semester
-            ) {
-                $query->where('student_id', $student)
-                    ->where(
-                        'academic_session_id',
-                        $academicSession
-                    )
-                    ->where(
-                        'semester_id',
-                        $semester
-                    );
-            }
-        )
-            ->select(
-                'fee_category_id',
-                DB::raw('SUM(amount) as previous_paid')
+        public function getPreviousPaymentDetails(
+            $student,
+            $academicSession,
+            $semester
+        ) {
+            $previousPayments = FeePaymentDetail::whereHas(
+                'feePayment',
+                function ($query) use (
+                    $student,
+                    $academicSession,
+                    $semester
+                ) {
+                    $query->where('student_id', $student)
+                        ->where(
+                            'academic_session_id',
+                            $academicSession
+                        )
+                        ->where(
+                            'semester_id',
+                            $semester
+                        );
+                }
             )
-            ->groupBy('fee_category_id')
-            ->get();
+                ->select(
+                    'fee_category_id',
+                    DB::raw('SUM(amount) as previous_paid')
+                )
+                ->groupBy('fee_category_id')
+                ->get();
 
-        return response()->json(
-            $previousPayments
-        );
-    }
+            return response()->json(
+                $previousPayments
+            );
+        }
 }

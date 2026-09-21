@@ -35,162 +35,192 @@
                                 </div>
                             @endif
 
-                            <div class="col-12 grid-margin stretch-card">
-                                <div class="card">
-                                    <div class="card-body">
+                            <form action="{{ route('fee-payments.store') }}" method="POST">
+                                @csrf
 
-                                        <form action="{{ route('fee-payments.store') }}" method="POST">
-                                            @csrf
+                                <div class="row">
 
-                                            {{-- Student --}}
-                                            <div class="form-group">
-                                                <label for="student_id">Student</label>
+                                    {{-- Student --}}
+                                    <div class="form-group col-12 col-md-6 col-lg-4">
+                                        <label for="student_id">Student</label>
 
-                                                <select name="student_id" id="student_id" class="form-control">
-                                                    <option value="">Select Student</option>
+                                        <select name="student_id" id="student_id" class="form-control">
+                                            <option value="">Select Student</option>
 
-                                                    @foreach ($students as $student)
-                                                        <option value="{{ $student->id }}"
-                                                            data-session="{{ $student->academic_session_id }}"
-                                                            {{ old('student_id') == $student->id ? 'selected' : '' }}>
-                                                            {{ $student->student_id }} - {{ $student->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
+                                            @foreach ($students as $student)
+                                                <option value="{{ $student->id }}"
+                                                    data-session="{{ $student->academic_session_id }}"
+                                                    {{ old('student_id') == $student->id ? 'selected' : '' }}>
+                                                    {{ $student->student_id }} - {{ $student->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
 
-                                                <x-admin.error-msg name="student_id" />
+                                        <x-admin.error-msg name="student_id" />
+                                    </div>
+
+
+                                    {{-- Academic Session --}}
+                                    <div class="form-group col-12 col-md-6 col-lg-4">
+                                        <label for="academic_session_id">Academic Session</label>
+
+                                        <select name="academic_session_id"
+                                            id="academic_session_id"
+                                            class="form-control">
+
+                                            <option value="">
+                                                Select Academic Session
+                                            </option>
+
+                                            @foreach ($academicSessions as $academicSession)
+                                                <option value="{{ $academicSession->id }}"
+                                                    {{ old('academic_session_id') == $academicSession->id ? 'selected' : '' }}>
+                                                    {{ $academicSession->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+
+                                        <x-admin.error-msg name="academic_session_id" />
+                                    </div>
+
+
+                                    {{-- Semester --}}
+                                    <div class="form-group col-12 col-md-6 col-lg-4">
+                                        <label for="semester_id">Semester</label>
+
+                                        <select name="semester_id"
+                                            id="semester_id"
+                                            class="form-control">
+
+                                            <option value="">
+                                                Select Semester
+                                            </option>
+
+                                            @foreach ($semesters as $semester)
+                                                <option value="{{ $semester->id }}"
+                                                    data-session="{{ $semester->academic_session_id }}"
+                                                    {{ old('semester_id') == $semester->id ? 'selected' : '' }}>
+                                                    {{ $semester->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+
+                                        <x-admin.error-msg name="semester_id" />
+                                    </div>
+
+
+                                    {{-- Fee Structure --}}
+                                    <div class="form-group col-12">
+
+                                        <label>Fee Structure</label>
+
+                                        <div id="fee-structure-container">
+
+                                            <div class="alert alert-info mb-0">
+                                                Please select a semester to view the fee structure.
                                             </div>
 
+                                        </div>
 
-                                            {{-- Academic Session --}}
-                                            <div class="form-group">
-                                                <label>Academic Session</label>
-
-                                                <select name="academic_session_id" id="academic_session_id"
-                                                    class="form-control">
-                                                    <option value="">
-                                                        Select Academic Session
-                                                    </option>
-
-                                                    @foreach ($academicSessions as $academicSession)
-                                                        <option value="{{ $academicSession->id }}"
-                                                            {{ old('academic_session_id') == $academicSession->id ? 'selected' : '' }}>
-                                                            {{ $academicSession->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-
-                                                <x-admin.error-msg name="academic_session_id" />
-                                            </div>
+                                    </div>
 
 
-                                            {{-- Semester --}}
-                                            <div class="form-group">
-                                                <label>Semester</label>
+                                    {{-- Total Amount --}}
+                                    <div class="form-group col-12 col-md-6 col-lg-4">
+                                        <label for="total_amount">Total Amount</label>
 
-                                                <select name="semester_id" id="semester_id" class="form-control">
-                                                    <option value="">
-                                                        Select Semester
-                                                    </option>
+                                        <input type="number"
+                                            step="0.01"
+                                            class="form-control"
+                                            id="total_amount"
+                                            name="total_amount"
+                                            value="{{ old('total_amount') }}"
+                                            readonly>
 
-                                                    @foreach ($semesters as $semester)
-                                                        <option value="{{ $semester->id }}"
-                                                            data-session="{{ $semester->academic_session_id }}"
-                                                            {{ old('semester_id') == $semester->id ? 'selected' : '' }}>
-                                                            {{ $semester->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-
-                                                <x-admin.error-msg name="semester_id" />
-                                            </div>
-
-                                            {{-- fee structure --}}
-                                            <div class="form-group">
-
-                                                <label>Fee Structure</label>
-
-                                                <div id="fee-structure-container">
-
-                                                    <div class="alert alert-info">
-                                                        Please select a semester to view the fee structure.
-                                                    </div>
-
-                                                </div>
-
-                                            </div>
-
-                                            {{-- Total Amount --}}
-                                            <div class="form-group">
-
-                                                <label>Total Amount</label>
-
-                                                <input type="number" step="0.01" class="form-control" id="total_amount"
-                                                    name="total_amount" value="{{ old('total_amount') }}" readonly>
-
-                                                <x-admin.error-msg name="total_amount" />
-
-                                            </div>
-
-                                            {{-- previous paid --}}
-                                            <div class="form-group">
-
-                                                <label>Previous Paid</label>
-
-                                                <input type="number" step="0.01" class="form-control" id="previous_paid"
-                                                    value="0" readonly>
-
-                                            </div>
-
-                                            {{-- payment amount --}}
-                                            <div class="form-group">
-
-                                                <label>Payment Amount</label>
-
-                                                <input type="number" step="0.01" min="0" class="form-control"
-                                                    name="payment_amount" id="payment_amount" placeholder="Payment amount"
-                                                    value="{{ old('payment_amount') }}">
-
-                                                <x-admin.error-msg name="payment_amount" />
-
-                                            </div>
-                                            {{-- due --}}
-                                            <div class="form-group">
-
-                                                <label>Due Amount</label>
-
-                                                <input type="number" step="0.01" class="form-control" name="due_amount"
-                                                    id="due_amount" value="{{ old('due_amount', 0) }}" readonly>
-
-                                                <x-admin.error-msg name="due_amount" />
-
-                                            </div>
-
-                                            {{-- Payment Date --}}
-                                            <div class="form-group">
-                                                <label>Payment Date</label>
-
-                                                <input type="date" class="form-control" name="payment_date"
-                                                    value="{{ old('payment_date', now()->toDateString()) }}">
-
-                                                <x-admin.error-msg name="payment_date" />
-                                            </div>
+                                        <x-admin.error-msg name="total_amount" />
+                                    </div>
 
 
+                                    {{-- Previous Paid --}}
+                                    <div class="form-group col-12 col-md-6 col-lg-4">
+                                        <label for="previous_paid">Previous Paid</label>
 
-                                            <button type="submit" class="btn btn-primary me-2">
-                                                Create Payment
-                                            </button>
+                                        <input type="number"
+                                            step="0.01"
+                                            class="form-control"
+                                            id="previous_paid"
+                                            value="0"
+                                            readonly>
+                                    </div>
 
-                                            <a href="{{ route('fee-payments.index') }}" class="btn btn-dark">
-                                                Cancel
-                                            </a>
 
-                                        </form>
+                                    {{-- Payment Amount --}}
+                                    <div class="form-group col-12 col-md-6 col-lg-4">
+                                        <label for="payment_amount">Payment Amount</label>
+
+                                        <input type="number"
+                                            step="0.01"
+                                            min="0"
+                                            class="form-control"
+                                            name="payment_amount"
+                                            id="payment_amount"
+                                            placeholder="Payment amount"
+                                            value="{{ old('payment_amount') }}">
+
+                                        <x-admin.error-msg name="payment_amount" />
+                                    </div>
+
+
+                                    {{-- Due Amount --}}
+                                    <div class="form-group col-12 col-md-6 col-lg-4">
+                                        <label for="due_amount">Due Amount</label>
+
+                                        <input type="number"
+                                            step="0.01"
+                                            class="form-control"
+                                            name="due_amount"
+                                            id="due_amount"
+                                            value="{{ old('due_amount', 0) }}"
+                                            readonly>
+
+                                        <x-admin.error-msg name="due_amount" />
+                                    </div>
+
+
+                                    {{-- Payment Date --}}
+                                    <div class="form-group col-12 col-md-6 col-lg-4">
+                                        <label for="payment_date">Payment Date</label>
+
+                                        <input type="date"
+                                            class="form-control"
+                                            id="payment_date"
+                                            name="payment_date"
+                                            value="{{ old('payment_date', now()->toDateString()) }}">
+
+                                        <x-admin.error-msg name="payment_date" />
+                                    </div>
+
+                                </div>
+
+
+                                {{-- Form Actions --}}
+                                <div class="row mt-3">
+                                    <div class="col-12">
+
+                                        <button type="submit" class="btn btn-primary me-2">
+                                            <i class="mdi mdi-content-save"></i>
+                                            Create Payment
+                                        </button>
+
+                                        {{-- <a href="{{ route('fee-payments.index') }}" class="btn btn-dark">
+                                            <i class="mdi mdi-close"></i>
+                                            Cancel
+                                        </a> --}}
 
                                     </div>
                                 </div>
-                            </div>
+
+                            </form>
 
                         </div>
                     </div>
@@ -200,6 +230,7 @@
         </div>
     </div>
 @endsection
+
 
 @section('scripts')
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -380,7 +411,6 @@
                                 <th>Fee Category</th>
                                 <th>Fee Amount</th>
                                 <th>Previous Paid</th>
-                                <th>Current Payment</th>
                                 <th>Remaining Due</th>
                             </tr>
                         </thead>
@@ -410,9 +440,16 @@
                             ৳0.00
                         </td>
 
+                        
+
+                        <td>
+                            <span class="remaining-due">
+                                ৳${amount.toFixed(2)}
+                            </span>
+                        </td>
                         <td>
                             <input
-                                type="number"
+                                type="hidden"
                                 step="0.01"
                                 min="0"
                                 class="form-control payment-detail"
@@ -422,12 +459,6 @@
                                 data-previous-paid="0"
                                 value="0"
                             >
-                        </td>
-
-                        <td>
-                            <span class="remaining-due">
-                                ৳${amount.toFixed(2)}
-                            </span>
                         </td>
 
                     </tr>
@@ -454,9 +485,7 @@
                                     ৳0.00
                                 </th>
 
-                                <th id="detail-payment-total">
-                                    ৳0.00
-                                </th>
+                                
 
                                 <th id="detail-due-total">
                                     ৳${total.toFixed(2)}
