@@ -35,7 +35,7 @@
 
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Student ID</label>
-                                        <input type="text" name="student_id" class="form-control"
+                                        <input type="number" name="student_id" class="form-control"
                                             value="{{ old('student_id') }}" placeholder="Enter student ID">
                                         <x-admin.error-msg name="student_id" />
 

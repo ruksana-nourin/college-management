@@ -1,7 +1,10 @@
 @extends('admin.layouts.master')
 
+@section('styles')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+@endsection
+
 @section('content')
-    ```
     <div class="main-panel">
 
         <div class="content-wrapper">
@@ -41,19 +44,16 @@
 
                                             {{-- Student --}}
                                             <div class="form-group">
-                                                <label>Student</label>
+                                                <label for="student_id">Student</label>
 
                                                 <select name="student_id" id="student_id" class="form-control">
-                                                    <option value="">
-                                                        Select Student
-                                                    </option>
+                                                    <option value="">Select Student</option>
 
                                                     @foreach ($students as $student)
                                                         <option value="{{ $student->id }}"
+                                                            data-session="{{ $student->academic_session_id }}"
                                                             {{ old('student_id') == $student->id ? 'selected' : '' }}>
-                                                            {{ $student->student_id }}
-                                                            -
-                                                            {{ $student->name }}
+                                                            {{ $student->student_id }} - {{ $student->name }}
                                                         </option>
                                                     @endforeach
                                                 </select>
@@ -131,6 +131,17 @@
                                                 <x-admin.error-msg name="total_amount" />
 
                                             </div>
+
+                                            {{-- previous paid --}}
+                                            <div class="form-group">
+
+                                                <label>Previous Paid</label>
+
+                                                <input type="number" step="0.01" class="form-control" id="previous_paid"
+                                                    value="0" readonly>
+
+                                            </div>
+
                                             {{-- payment amount --}}
                                             <div class="form-group">
 
@@ -166,17 +177,6 @@
                                             </div>
 
 
-                                            {{-- Payment Amount --}}
-                                            <div class="form-group">
-                                                <label>Payment Amount</label>
-
-                                                <input type="number" step="0.01" min="0" class="form-control"
-                                                    name="payment_amount" placeholder="Payment amount"
-                                                    value="{{ old('payment_amount') }}">
-
-                                                <x-admin.error-msg name="payment_amount" />
-                                            </div>
-
 
                                             <button type="submit" class="btn btn-primary me-2">
                                                 Create Payment
@@ -199,302 +199,683 @@
 
         </div>
     </div>
-    ```
 @endsection
 
 @section('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<script>
-    $(document).ready(function () {
+    <script>
+        $(document).ready(function() {
 
-        let sessionSelect = $('#academic_session_id');
-        let semesterSelect = $('#semester_id');
+            let studentSelect = $('#student_id');
+            let sessionSelect = $('#academic_session_id');
+            let semesterSelect = $('#semester_id');
 
-        let feeStructureContainer = $('#fee-structure-container');
+            let feeStructureContainer = $('#fee-structure-container');
 
-        let totalAmountInput = $('#total_amount');
-        let paymentAmountInput = $('#payment_amount');
-        let dueAmountInput = $('#due_amount');
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Store All Semester Options
-        |--------------------------------------------------------------------------
-        */
-
-        let allSemesters = semesterSelect.find('option').clone();
+            let totalAmountInput = $('#total_amount');
+            let previousPaidInput = $('#previous_paid');
+            let paymentAmountInput = $('#payment_amount');
+            let dueAmountInput = $('#due_amount');
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | Filter Semesters
-        |--------------------------------------------------------------------------
-        */
+            /*
+            |--------------------------------------------------------------------------
+            | Student Select2
+            |--------------------------------------------------------------------------
+            */
 
-        function filterSemesters() {
+            studentSelect.select2({
+                placeholder: 'Select Student',
+                allowClear: true,
+                width: '100%'
+            });
 
-            let sessionId = sessionSelect.val();
 
-            semesterSelect.empty();
+            /*
+            |--------------------------------------------------------------------------
+            | Store All Semester Options
+            |--------------------------------------------------------------------------
+            */
 
-            semesterSelect.append(
-                '<option value="">Select Semester</option>'
-            );
+            let allSemesters = semesterSelect.find('option').clone();
 
-            if (!sessionId) {
-                return;
+
+            /*
+            |--------------------------------------------------------------------------
+            | Calculate Due
+            |--------------------------------------------------------------------------
+            */
+
+            function calculateDue() {
+
+                let totalAmount =
+                    parseFloat(totalAmountInput.val()) || 0;
+
+                let previousPaid =
+                    parseFloat(previousPaidInput.val()) || 0;
+
+                let paymentAmount =
+                    parseFloat(paymentAmountInput.val()) || 0;
+
+                let due =
+                    totalAmount - previousPaid - paymentAmount;
+
+                if (due < 0) {
+                    due = 0;
+                }
+
+                dueAmountInput.val(
+                    due.toFixed(2)
+                );
             }
 
-            allSemesters.each(function () {
+            /*
+            |--------------------------------------------------------------------------
+            | Filter Semesters
+            |--------------------------------------------------------------------------
+            */
 
-                let option = $(this);
+            function filterSemesters() {
 
-                if (option.val() === '') {
+                let sessionId = sessionSelect.val();
+
+                semesterSelect.empty();
+
+                semesterSelect.append(
+                    '<option value="">Select Semester</option>'
+                );
+
+
+                if (!sessionId) {
                     return;
                 }
 
-                let optionSessionId = option.data('session');
 
-                if (optionSessionId == sessionId) {
+                allSemesters.each(function() {
 
-                    semesterSelect.append(
-                        option.clone()
-                    );
-                }
-            });
-        }
+                    let option = $(this);
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Load Fee Structures
-        |--------------------------------------------------------------------------
-        */
-
-        function loadFeeStructures() {
-
-            let semesterId = semesterSelect.val();
-
-            feeStructureContainer.html(`
-                <div class="alert alert-info">
-                    Please select a semester to view the fee structure.
-                </div>
-            `);
-
-            totalAmountInput.val('');
-            dueAmountInput.val('0');
-
-
-            if (!semesterId) {
-                return;
-            }
-
-
-            feeStructureContainer.html(`
-                <div class="alert alert-info">
-                    Loading fee structures...
-                </div>
-            `);
-
-
-            $.ajax({
-
-                url: "{{ url('fee-payments/fee-structures') }}/" + semesterId,
-
-                type: "GET",
-
-                success: function (feeStructures) {
-
-                    if (feeStructures.length === 0) {
-
-                        feeStructureContainer.html(`
-                            <div class="alert alert-warning">
-                                No fee structure found for this semester.
-                            </div>
-                        `);
-
+                    if (option.val() === '') {
                         return;
                     }
 
 
-                    let html = '';
-
-                    let total = 0;
-
-
-                    html += `
-                        <div class="table-responsive">
-
-                            <table class="table">
-
-                                <thead>
-                                    <tr>
-                                        <th>Fee Category</th>
-                                        <th>Amount</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                    `;
+                    let optionSessionId =
+                        option.data('session');
 
 
-                    feeStructures.forEach(function (item) {
+                    if (optionSessionId == sessionId) {
 
-                        let amount = parseFloat(item.amount);
+                        semesterSelect.append(
+                            option.clone()
+                        );
+                    }
 
-                        total += amount;
+                });
+            }
 
+
+            /*
+            |--------------------------------------------------------------------------
+            | Load Fee Structures
+            |--------------------------------------------------------------------------
+            */
+
+            function loadFeeStructures() {
+
+                let semesterId = semesterSelect.val();
+
+                feeStructureContainer.html(`
+        <div class="alert alert-info">
+            Please select a semester to view the fee structure.
+        </div>
+    `);
+
+                totalAmountInput.val('');
+                dueAmountInput.val('0.00');
+
+                if (!semesterId) {
+                    return;
+                }
+
+                feeStructureContainer.html(`
+        <div class="alert alert-info">
+            Loading fee structures...
+        </div>
+    `);
+
+                $.ajax({
+                    url: "{{ url('fee-payments/fee-structures') }}/" +
+                        semesterId,
+
+                    type: "GET",
+
+                    success: function(feeStructures) {
+
+                        if (feeStructures.length === 0) {
+
+                            feeStructureContainer.html(`
+                    <div class="alert alert-warning">
+                        No fee structure found for this semester.
+                    </div>
+                `);
+
+                            totalAmountInput.val('');
+                            calculateDue();
+
+                            return;
+                        }
+
+                        let html = '';
+                        let total = 0;
 
                         html += `
+                <div class="table-responsive">
+
+                    <table class="table table-hover">
+
+                        <thead>
+                            <tr>
+                                <th>Fee Category</th>
+                                <th>Fee Amount</th>
+                                <th>Previous Paid</th>
+                                <th>Current Payment</th>
+                                <th>Remaining Due</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+            `;
+
+                        feeStructures.forEach(function(item) {
+
+                            let amount =
+                                parseFloat(item.amount) || 0;
+
+                            total += amount;
+
+                            html += `
+                    <tr>
+
+                        <td>
+                            ${item.fee_category.name}
+                        </td>
+
+                        <td>
+                            ৳${amount.toFixed(2)}
+                        </td>
+
+                        <td class="previous-paid">
+                            ৳0.00
+                        </td>
+
+                        <td>
+                            <input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                class="form-control payment-detail"
+                                name="payment_details[${item.fee_category_id}]"
+                                data-category="${item.fee_category_id}"
+                                data-amount="${amount}"
+                                data-previous-paid="0"
+                                value="0"
+                            >
+                        </td>
+
+                        <td>
+                            <span class="remaining-due">
+                                ৳${amount.toFixed(2)}
+                            </span>
+                        </td>
+
+                    </tr>
+                `;
+
+                        });
+
+                        html += `
+                        </tbody>
+
+                        <tfoot>
+
                             <tr>
 
-                                <td>
-                                    ${item.fee_category.name}
-                                </td>
+                                <th>
+                                    Total
+                                </th>
 
-                                <td>
-                                    ৳${amount.toFixed(2)}
-                                </td>
+                                <th>
+                                    ৳${total.toFixed(2)}
+                                </th>
+
+                                <th>
+                                    ৳0.00
+                                </th>
+
+                                <th id="detail-payment-total">
+                                    ৳0.00
+                                </th>
+
+                                <th id="detail-due-total">
+                                    ৳${total.toFixed(2)}
+                                </th>
 
                             </tr>
-                        `;
 
-                    });
+                        </tfoot>
+
+                    </table>
+
+                </div>
+            `;
+
+                        feeStructureContainer.html(html);
+
+                        totalAmountInput.val(
+                            total.toFixed(2)
+                        );
+
+                        calculateDue();
+                        loadPreviousPaymentDetails();
+                    },
+
+                    error: function() {
+
+                        feeStructureContainer.html(`
+                <div class="alert alert-danger">
+                    Failed to load fee structures.
+                </div>
+            `);
+
+                    }
+                });
+            }
+            /*
+            |--------------------------------------------------------------------------
+            | Load Previous Payment
+            |--------------------------------------------------------------------------
+            */
+
+            function loadPreviousPayment() {
+
+                let studentId =
+                    studentSelect.val();
+
+                let sessionId =
+                    sessionSelect.val();
+
+                let semesterId =
+                    semesterSelect.val();
 
 
-                    html += `
-                                </tbody>
+                if (!studentId || !sessionId || !semesterId) {
 
-                                <tfoot>
-
-                                    <tr>
-                                        <th>Total Amount</th>
-
-                                        <th>
-                                            ৳${total.toFixed(2)}
-                                        </th>
-                                    </tr>
-
-                                </tfoot>
-
-                            </table>
-
-                        </div>
-                    `;
-
-
-                    feeStructureContainer.html(html);
-
-
-                    totalAmountInput.val(
-                        total.toFixed(2)
-                    );
-
+                    previousPaidInput.val('0.00');
 
                     calculateDue();
 
-                },
+                    return;
+                }
 
-                error: function () {
 
-                    feeStructureContainer.html(`
-                        <div class="alert alert-danger">
-                            Failed to load fee structures.
-                        </div>
-                    `);
+                $.ajax({
+
+                    url: "{{ url('fee-payments/previous-payment') }}/" +
+                        studentId + '/' +
+                        sessionId + '/' +
+                        semesterId,
+
+                    type: 'GET',
+
+                    success: function(response) {
+
+                        previousPaidInput.val(
+                            parseFloat(
+                                response.previous_paid
+                            ).toFixed(2)
+                        );
+
+
+                        calculateDue();
+
+                    },
+
+                    error: function() {
+
+                        previousPaidInput.val('0.00');
+
+                        calculateDue();
+
+                    }
+
+                });
+
+            }
+
+            function loadPreviousPaymentDetails() {
+
+                let studentId =
+                    studentSelect.val();
+
+                let sessionId =
+                    sessionSelect.val();
+
+                let semesterId =
+                    semesterSelect.val();
+
+                if (!studentId || !sessionId || !semesterId) {
+                    return;
+                }
+
+                $.ajax({
+
+                    url: "{{ url('fee-payments/previous-payment-details') }}/" +
+                        studentId + '/' +
+                        sessionId + '/' +
+                        semesterId,
+
+                    type: 'GET',
+
+                    success: function(previousPayments) {
+
+                        $('.payment-detail').each(function() {
+
+                            let input = $(this);
+
+                            let categoryId =
+                                input.data('category');
+
+                            let feeAmount =
+                                parseFloat(
+                                    input.data('amount')
+                                ) || 0;
+
+                            let previousPaid = 0;
+
+                            previousPayments.forEach(
+                                function(item) {
+
+                                    if (
+                                        item.fee_category_id ==
+                                        categoryId
+                                    ) {
+                                        previousPaid =
+                                            parseFloat(
+                                                item.previous_paid
+                                            ) || 0;
+                                    }
+
+                                }
+                            );
+
+                            if (previousPaid > feeAmount) {
+                                previousPaid = feeAmount;
+                            }
+
+                            let remainingDue =
+                                feeAmount - previousPaid;
+
+                            input
+                                .closest('tr')
+                                .find('.previous-paid')
+                                .text(
+                                    '৳' +
+                                    previousPaid.toFixed(2)
+                                );
+
+                            input
+                                .closest('tr')
+                                .find('.remaining-due')
+                                .text(
+                                    '৳' +
+                                    remainingDue.toFixed(2)
+                                );
+
+                            input.data(
+                                'previous-paid',
+                                previousPaid
+                            );
+
+                        });
+
+                        calculatePaymentDetails();
+                    },
+
+                    error: function() {
+
+                        console.log(
+                            'Failed to load previous payment details.'
+                        );
+
+                    }
+
+                });
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Student Change
+            |--------------------------------------------------------------------------
+            */
+
+            studentSelect.on('change', function() {
+
+                let selectedOption =
+                    $(this).find('option:selected');
+
+
+                let sessionId =
+                    selectedOption.data('session');
+
+
+                if (sessionId) {
+
+                    sessionSelect
+                        .val(sessionId)
+                        .trigger('change');
+
+                } else {
+
+                    sessionSelect
+                        .val('')
+                        .trigger('change');
 
                 }
 
             });
 
-        }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Academic Session Change
+            |--------------------------------------------------------------------------
+            */
+
+            sessionSelect.on('change', function() {
+
+                semesterSelect.val('');
+
+                filterSemesters();
+
+                loadFeeStructures();
+
+                previousPaidInput.val('0.00');
+
+                calculateDue();
+
+            });
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | Calculate Due
-        |--------------------------------------------------------------------------
-        */
+            /*
+            |--------------------------------------------------------------------------
+            | Semester Change
+            |--------------------------------------------------------------------------
+            */
 
-        function calculateDue() {
+            semesterSelect.on('change', function() {
 
-            let total =
-                parseFloat(totalAmountInput.val()) || 0;
+                loadFeeStructures();
 
-            let payment =
-                parseFloat(paymentAmountInput.val()) || 0;
+                loadPreviousPayment();
 
 
-            let due = total - payment;
+            });
 
 
-            if (due < 0) {
-                due = 0;
+            /*
+            |--------------------------------------------------------------------------
+            | Payment Amount Change
+            |--------------------------------------------------------------------------
+            */
+
+            paymentAmountInput.on('input', function() {
+
+                let paymentAmount =
+                    parseFloat(
+                        $(this).val()
+                    ) || 0;
+
+                let remainingPayment =
+                    paymentAmount;
+
+                $('.payment-detail').each(function() {
+
+                    let input = $(this);
+
+                    let feeAmount =
+                        parseFloat(
+                            input.data('amount')
+                        ) || 0;
+
+                    let previousPaid =
+                        parseFloat(
+                            input.data('previous-paid')
+                        ) || 0;
+
+                    let currentDue =
+                        feeAmount - previousPaid;
+
+                    if (currentDue < 0) {
+                        currentDue = 0;
+                    }
+
+                    let categoryPayment =
+                        Math.min(
+                            remainingPayment,
+                            currentDue
+                        );
+
+                    input.val(
+                        categoryPayment.toFixed(2)
+                    );
+
+                    remainingPayment -= categoryPayment;
+
+                });
+
+                calculatePaymentDetails();
+
+                calculateDue();
+
+            });
+
+            function calculatePaymentDetails() {
+
+                let totalPayment = 0;
+                let totalDue = 0;
+
+                $('.payment-detail').each(function() {
+
+                    let input = $(this);
+
+                    let feeAmount =
+                        parseFloat(
+                            input.data('amount')
+                        ) || 0;
+
+                    let previousPaid =
+                        parseFloat(
+                            input.data('previous-paid')
+                        ) || 0;
+
+                    let currentPayment =
+                        parseFloat(
+                            input.val()
+                        ) || 0;
+
+                    let currentDue =
+                        feeAmount - previousPaid;
+
+                    if (currentDue < 0) {
+                        currentDue = 0;
+                    }
+
+                    if (currentPayment > currentDue) {
+
+                        currentPayment = currentDue;
+
+                        input.val(
+                            currentPayment.toFixed(2)
+                        );
+                    }
+
+                    let remainingDue =
+                        currentDue - currentPayment;
+
+                    if (remainingDue < 0) {
+                        remainingDue = 0;
+                    }
+
+                    totalPayment += currentPayment;
+                    totalDue += remainingDue;
+
+                    input
+                        .closest('tr')
+                        .find('.remaining-due')
+                        .text(
+                            '৳' +
+                            remainingDue.toFixed(2)
+                        );
+
+                });
+
+                $('#detail-payment-total').text(
+                    '৳' +
+                    totalPayment.toFixed(2)
+                );
+
+                $('#detail-due-total').text(
+                    '৳' +
+                    totalDue.toFixed(2)
+                );
+
             }
 
+            $(document).on(
+                'input',
+                '.payment-detail',
+                function() {
 
-            dueAmountInput.val(
-                due.toFixed(2)
+                    calculatePaymentDetails();
+
+                }
             );
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Academic Session Change
-        |--------------------------------------------------------------------------
-        */
-
-        sessionSelect.on('change', function () {
-
-            semesterSelect.val('');
+            /*
+            |--------------------------------------------------------------------------
+            | Initial Load
+            |--------------------------------------------------------------------------
+            */
 
             filterSemesters();
 
             loadFeeStructures();
 
-        });
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Semester Change
-        |--------------------------------------------------------------------------
-        */
-
-        semesterSelect.on('change', function () {
-
-            loadFeeStructures();
-
-        });
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Payment Amount Change
-        |--------------------------------------------------------------------------
-        */
-
-        paymentAmountInput.on('input', function () {
-
             calculateDue();
 
+            loadPreviousPayment();
+
         });
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Initial Load
-        |--------------------------------------------------------------------------
-        */
-
-        filterSemesters();
-
-        loadFeeStructures();
-
-    });
-
-</script>
-
+    </script>
 @endsection

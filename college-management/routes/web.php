@@ -66,6 +66,23 @@ Route::get(
     [FeePaymentController::class, 'getFeeStructures']
 )->name('fee-payments.fee-structures');
 
+Route::get(
+    'fee-payments/previous-payment/{student}/{academicSession}/{semester}',
+    [FeePaymentController::class, 'getPreviousPayment']
+)->name('fee-payments.previous-payment');
+
+// print
+Route::get(
+    'fee-payments/{feePayment}/print',
+    [FeePaymentController::class, 'print']
+)->name('fee-payments.print');
+
+//fee details
+Route::get(
+    'fee-payments/previous-payment-details/{student}/{academicSession}/{semester}',
+    [FeePaymentController::class, 'getPreviousPaymentDetails']
+)->name('fee-payments.previous-payment-details');
+
 // Authentication
 Route::get('/login', function () {
     return view('admin.pages.auth.login');

@@ -31,6 +31,8 @@ class UploadImages
 
         $img_file->move(
             public_path($path),
+            // public_path('../../college-management.nourin.xyz/uploads/students/' . $path),
+
             $img_name
         );
 
