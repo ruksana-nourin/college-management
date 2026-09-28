@@ -38,7 +38,8 @@ class DatabaseSeeder extends Seeder
         // GroupSeeder::class,
         // FeeCategorySeeder::class,
         // FeeStructureSeeder::class,
-        FeePaymentSeeder::class
+        // FeePaymentSeeder::class,
+        TeacherSeeder::class,
 
     ]);
     }

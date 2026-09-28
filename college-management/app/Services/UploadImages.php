@@ -17,6 +17,7 @@ class UploadImages
         $path = 'uploads',
         $img_name = null
     ) {
+
         if (!is_dir(public_path($path))) {
             mkdir(public_path($path), 0755, true);
         }
@@ -30,8 +31,8 @@ class UploadImages
         }
 
         $img_file->move(
-            // public_path($path),
-            public_path('../../college-management.nourin.xyz/uploads/students/' . $path),
+            public_path($path),
+            // public_path('../../college-management.nourin.xyz/uploads/students/' . $path),
 
             $img_name
         );

@@ -11,6 +11,7 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -42,6 +43,7 @@ Route::resource('students', StudentController::class);
 Route::resource('fee-categories', FeeCategoryController::class);
 Route::resource('fee-structures', FeeStructureController::class);
 Route::resource('fee-payments', FeePaymentController::class);
+Route::resource('teachers', TeacherController::class);
 
 
 

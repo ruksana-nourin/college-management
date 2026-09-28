@@ -91,7 +91,7 @@
                 </ul> --}}
             </div>
         </li>
-        <li class="nav-item menu-items">
+        <li class="nav-item menu-items  {{ request()->routeIs('teachers.*') ? 'active' : '' }}">
             <a class="nav-link" data-toggle="collapse" href="#teacher" aria-expanded="false" aria-controls="ui-basic">
                 <span class="menu-icon">
                     {{-- <i class="mdi mdi-people-fill"></i> --}}
@@ -102,7 +102,7 @@
             </a>
             <div class="collapse" id="teacher">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">All Teachers</a>
+                    <li class="nav-item {{ request()->routeIs('teachers.index') ? 'active' : '' }}"> <a class="nav-link" href="{{ route('teachers.index') }}">All Teachers</a>
                     </li>
                     <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Add Teacher</a>
                     </li>
