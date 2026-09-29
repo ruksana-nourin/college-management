@@ -70,52 +70,125 @@
                 <span class="menu-title">Dashboard</span>
             </a>
         </li>
-        <li class="nav-item menu-items {{ request()->routeIs('students.*') ? 'active' : '' }}">
-            <a class="nav-link" data-toggle="collapse" href="#student" aria-expanded="false" aria-controls="ui-basic">
+
+        {{-- Attendance --}}
+        <li class="nav-item menu-items {{ request()->routeIs('attendance-sessions.*') ? 'active' : '' }}">
+
+            <a class="nav-link" data-toggle="collapse" href="#attendanceMenus"
+                aria-expanded="{{ request()->routeIs('attendance-sessions.*') ? 'true' : 'false' }}"
+                aria-controls="attendanceMenus">
+
                 <span class="menu-icon">
-                    {{-- <i class="mdi mdi-people-fill"></i> --}}
+                    <i class="mdi mdi-check-network"></i>
+                </span>
+
+                <span class="menu-title">Attendance</span>
+                <i class="menu-arrow"></i>
+            </a>
+
+            <div class="collapse {{ request()->routeIs('attendance-sessions.*') ? 'show' : '' }}" id="attendanceMenus">
+
+                <ul class="nav flex-column sub-menu">
+
+                    <li class="nav-item {{ request()->routeIs('attendance-sessions.create') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('attendance-sessions.create') }}">
+                            Take Attendance
+                        </a>
+                    </li>
+
+                    <li class="nav-item {{ request()->routeIs('attendance-sessions.index') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('attendance-sessions.index') }}">
+                            Attendance List
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            Attendance Report
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+        </li>
+
+
+        {{-- Student --}}
+        <li class="nav-item menu-items {{ request()->routeIs('students.*') ? 'active' : '' }}">
+
+            <a class="nav-link" data-toggle="collapse" href="#studentMenu"
+                aria-expanded="{{ request()->routeIs('students.*') ? 'true' : 'false' }}" aria-controls="studentMenu">
+
+                <span class="menu-icon">
                     <i class="mdi mdi-account-group"></i>
                 </span>
+
                 <span class="menu-title">Student</span>
                 <i class="menu-arrow"></i>
             </a>
-            <div class="collapse" id="student">
+
+            <div class="collapse {{ request()->routeIs('students.*') ? 'show' : '' }}" id="studentMenu"
+                data-parent="#sidebar">
+
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item {{ request()->routeIs('students.create') ? 'active' : '' }}"> <a class="nav-link" href="{{ route('students.create') }}">Add Student</a>
+
+                    <li class="nav-item {{ request()->routeIs('students.create') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('students.create') }}">
+                            Add Student
+                        </a>
                     </li>
-                    <li class="nav-item {{ request()->routeIs('students.index') ? 'active' : '' }}"> <a class="nav-link" href="{{ route('students.index') }}">All Students</a>
+
+                    <li class="nav-item {{ request()->routeIs('students.index') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('students.index') }}">
+                            All Students
+                        </a>
                     </li>
-                    {{-- <li class="nav-item"> <a class="nav-link" href="{{ route('students.profile') }}">
-                            Student Profile</a>
-                    </li>
-                </ul> --}}
+
+                </ul>
             </div>
         </li>
-        <li class="nav-item menu-items  {{ request()->routeIs('teachers.*') ? 'active' : '' }}">
-            <a class="nav-link" data-toggle="collapse" href="#teacher" aria-expanded="false" aria-controls="ui-basic">
+
+        {{-- Teacher --}}
+        <li class="nav-item menu-items {{ request()->routeIs('teachers.*') ? 'active' : '' }}">
+
+            <a class="nav-link" data-toggle="collapse" href="#teacher"
+                aria-expanded="{{ request()->routeIs('teachers.*') ? 'true' : 'false' }}" aria-controls="teacher">
+
                 <span class="menu-icon">
-                    {{-- <i class="mdi mdi-people-fill"></i> --}}
                     <i class="mdi mdi-account-multiple"></i>
                 </span>
+
                 <span class="menu-title">Teacher</span>
                 <i class="menu-arrow"></i>
             </a>
-            <div class="collapse" id="teacher">
+
+            <div class="collapse {{ request()->routeIs('teachers.*') ? 'show' : '' }}" id="teacher"
+                data-parent="#sidebar">
+
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item {{ request()->routeIs('teachers.index') ? 'active' : '' }}"> <a class="nav-link" href="{{ route('teachers.index') }}">All Teachers</a>
+
+                    <li class="nav-item {{ request()->routeIs('teachers.index') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('teachers.index') }}">
+                            All Teachers
+                        </a>
                     </li>
-                    <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Add Teacher</a>
+
+                    <li class="nav-item {{ request()->routeIs('teachers.create') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('teachers.create') }}">
+                            Add Teacher
+                        </a>
                     </li>
+
                 </ul>
             </div>
         </li>
 
         {{-- Academic --}}
         <li
-            class="nav-item 
-                    {{ request()->routeIs('departments.*', 'courses.*', 'academic-classes.*', 'sections.*', 'groups.*', 'academic-sessions.*', 'semesters.*') ? 'active' : '' }}">
+            class="nav-item menu-items
+                    {{ request()->routeIs('departments.*', 'courses.*', 'academic-classes.*', 'sections.*', 'groups.*', 'academic-sessions.*', 'semesters.*', 'subjects.*') ? 'active' : '' }}">
             <a class="nav-link" data-toggle="collapse" href="#academic"
-                aria-expanded="{{ request()->routeIs('departments.*', 'courses.*', 'academic-classes.*', 'sections.*', 'groups.*', 'academic-sessions.*', 'semesters.*') ? 'true' : 'false' }}"
+                aria-expanded="{{ request()->routeIs('departments.*', 'courses.*', 'academic-classes.*', 'sections.*', 'groups.*', 'academic-sessions.*', 'semesters.*', 'subjects.*') ? 'true' : 'false' }}"
                 aria-controls="academic">
                 <span class="menu-icon">
 
@@ -136,10 +209,11 @@
                 'groups.*',
                 'academic-sessions.*',
                 'semesters.*',
+                'subjects.*',
             )
                 ? 'show'
                 : '' }}"
-                id="academic">
+                id="academic" data-parent="#sidebar">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item {{ request()->routeIs('departments.*') ? 'active' : '' }}"> <a
                             class="nav-link" href="{{ route('departments.index') }}">Department</a>
@@ -162,6 +236,9 @@
                     <li class="nav-item {{ request()->routeIs('semesters.*') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('semesters.index') }}">Semesters</a>
                     </li>
+                    <li class="nav-item {{ request()->routeIs('subjects.*') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('subjects.index') }}">Subjects</a>
+                    </li>
                 </ul>
             </div>
         </li>
@@ -180,7 +257,7 @@
         <li class="nav-item menu-items {{ request()->routeIs('fee-structures.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('fee-structures.index') }}">
                 <span class="menu-icon">
-                    <i class="mdi mdi-dots-vertical"></i>
+                    <i class="mdi mdi-view-list"></i>
                 </span>
                 <span class="menu-title">Fee Structure</span>
             </a>
@@ -203,7 +280,7 @@
                 <span class="menu-title">Users</span>
             </a>
         </li>
-        
+
     </ul>
 </nav>
 <!-- partial -->

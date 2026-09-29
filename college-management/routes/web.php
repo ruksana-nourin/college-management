@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AcademicClassController;
 use App\Http\Controllers\AcademicSessionController;
+use App\Http\Controllers\AttendanceSessionController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\FeeCategoryController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +46,8 @@ Route::resource('fee-categories', FeeCategoryController::class);
 Route::resource('fee-structures', FeeStructureController::class);
 Route::resource('fee-payments', FeePaymentController::class);
 Route::resource('teachers', TeacherController::class);
+Route::resource('subjects', SubjectController::class);
+Route::resource('attendance-sessions', AttendanceSessionController::class);
 
 
 
