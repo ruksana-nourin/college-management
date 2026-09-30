@@ -32,4 +32,49 @@ class AcademicSession extends Model
     {
         return $this->hasMany(FeePayment::class);
     }
+
+    public function academicSession()
+    {
+        return $this->belongsTo(AcademicSession::class);
+    }
+
+    public function semester()
+    {
+        return $this->belongsTo(Semester::class);
+    }
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
+    }
+
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class);
+    }
+
+    public function teacher()
+    {
+        return $this->belongsTo(Teacher::class);
+    }
+
+    public function academicClass()
+    {
+        return $this->belongsTo(
+            AcademicClass::class,
+            'class_id'
+        );
+    }
+
+    public function section()
+    {
+        return $this->belongsTo(Section::class);
+    }
+
+    public function attendanceRecords()
+    {
+        return $this->hasMany(
+            AttendanceRecord::class
+        );
+    }
 }

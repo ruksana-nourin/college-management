@@ -89,6 +89,44 @@ Route::get(
     [FeePaymentController::class, 'getPreviousPaymentDetails']
 )->name('fee-payments.previous-payment-details');
 
+// attendance
+Route::get(
+    'attendance-sessions/semesters/{sessionId}',
+    [AttendanceSessionController::class, 'getSemesters']
+)->name('attendance-sessions.semesters');
+
+Route::get(
+    'attendance-sessions/classes/{courseId}',
+    [AttendanceSessionController::class, 'getClasses']
+)->name('attendance-sessions.classes');
+
+Route::get(
+    'attendance-sessions/sections/{classId}',
+    [AttendanceSessionController::class, 'getSections']
+)->name('attendance-sessions.sections');
+
+Route::get(
+    'attendance-sessions/subjects/{courseId}',
+    [AttendanceSessionController::class, 'getSubjects']
+)->name('attendance-sessions.subjects');
+
+// students
+Route::get(
+    'attendance-sessions/students/{sectionId}',
+    [AttendanceSessionController::class, 'getStudents']
+)->name('attendance-sessions.students');
+
+
+Route::get(
+    'attendance-sessions/{attendanceSession}/take-attendance',
+    [AttendanceSessionController::class, 'takeAttendance']
+)->name('attendance-sessions.take-attendance');
+
+Route::post(
+    'attendance-sessions/{attendanceSession}/store-attendance',
+    [AttendanceSessionController::class, 'storeAttendance']
+)->name('attendance-sessions.store-attendance');
+
 // Authentication
 Route::get('/login', function () {
     return view('admin.pages.auth.login');
