@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AcademicClassController;
 use App\Http\Controllers\AcademicSessionController;
+use App\Http\Controllers\AttendanceRecordController;
+use App\Http\Controllers\AttendanceSessionController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\FeeCategoryController;
@@ -11,6 +13,8 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -42,6 +46,9 @@ Route::resource('students', StudentController::class);
 Route::resource('fee-categories', FeeCategoryController::class);
 Route::resource('fee-structures', FeeStructureController::class);
 Route::resource('fee-payments', FeePaymentController::class);
+Route::resource('teachers', TeacherController::class);
+Route::resource('subjects', SubjectController::class);
+Route::resource('attendance-sessions', AttendanceSessionController::class);
 
 
 
@@ -82,6 +89,56 @@ Route::get(
     'fee-payments/previous-payment-details/{student}/{academicSession}/{semester}',
     [FeePaymentController::class, 'getPreviousPaymentDetails']
 )->name('fee-payments.previous-payment-details');
+
+// attendance
+Route::get(
+    'attendance-sessions/semesters/{sessionId}',
+    [AttendanceSessionController::class, 'getSemesters']
+)->name('attendance-sessions.semesters');
+
+Route::get(
+    'attendance-sessions/classes/{courseId}',
+    [AttendanceSessionController::class, 'getClasses']
+)->name('attendance-sessions.classes');
+
+Route::get(
+    'attendance-sessions/sections/{classId}',
+    [AttendanceSessionController::class, 'getSections']
+)->name('attendance-sessions.sections');
+
+Route::get(
+    'attendance-sessions/subjects/{courseId}',
+    [AttendanceSessionController::class, 'getSubjects']
+)->name('attendance-sessions.subjects');
+
+// students
+Route::get(
+    'attendance-sessions/students/{sectionId}',
+    [AttendanceSessionController::class, 'getStudents']
+)->name('attendance-sessions.students');
+
+
+Route::get(
+    'attendance-sessions/{attendanceSession}/take-attendance',
+    [AttendanceSessionController::class, 'takeAttendance']
+)->name('attendance-sessions.take-attendance');
+
+Route::post(
+    'attendance-sessions/{attendanceSession}/store-attendance',
+    [AttendanceSessionController::class, 'storeAttendance']
+)->name('attendance-sessions.store-attendance');
+
+//attendance report
+Route::get(
+    'courses/{course}/classes',
+    [AttendanceSessionController::class, 'getClasses']
+)->name('courses.classes');
+
+
+Route::get(
+    'attendance-report',
+    [AttendanceRecordController::class, 'report']
+)->name('attendance.report');
 
 // Authentication
 Route::get('/login', function () {

@@ -347,3 +347,271 @@ a {
     background-color: #6c7293 !important;
     color: #ffffff !important;
 }
+
+/* take attendance */
+
+/* Attendance Header */
+
+.attendance-header {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font-weight: 600;
+}
+
+
+/* Attendance Row */
+
+.attendance-row {
+    display: flex;
+    align-items: center;
+    min-height: 85px;
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    transition: 0.2s ease;
+}
+
+.attendance-row:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+
+/* Number */
+
+.student-number {
+    width: 55px;
+    font-weight: 600;
+}
+
+
+/* Student */
+
+.student-info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+
+.student-avatar img,
+.avatar-placeholder {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+}
+
+
+.student-avatar img {
+    object-fit: cover;
+}
+
+
+.avatar-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.08);
+    font-size: 24px;
+}
+
+
+.student-details h6 {
+    margin: 0 0 4px;
+    font-size: 15px;
+}
+
+
+.student-details small {
+    color: #9a9a9a;
+}
+
+
+/* Attendance */
+
+.attendance-status {
+    width: 300px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+
+.attendance-option {
+    cursor: pointer;
+    margin: 0;
+}
+
+
+.attendance-option input {
+    display: none;
+}
+
+
+.attendance-option span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    transition: 0.2s ease;
+    font-size: 14px;
+}
+
+
+.present-option input:checked+span {
+    background: rgba(0, 200, 83, 0.12);
+    border-color: #00c853;
+    color: #00c853;
+}
+
+
+.absent-option input:checked+span {
+    background: rgba(255, 82, 82, 0.12);
+    border-color: #ff5252;
+    color: #ff5252;
+}
+
+
+/* Summary */
+
+.attendance-summary {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 18px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+
+.attendance-summary .summary-icon {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 22px;
+}
+
+
+.attendance-summary small {
+    color: #999;
+}
+
+
+.attendance-summary h4 {
+    margin: 3px 0 0;
+}
+
+
+.attendance-summary.total .summary-icon {
+    background: rgba(33, 150, 243, 0.12);
+    color: #2196f3;
+}
+
+
+.attendance-summary.present .summary-icon {
+    background: rgba(0, 200, 83, 0.12);
+    color: #00c853;
+}
+
+
+.attendance-summary.absent .summary-icon {
+    background: rgba(255, 82, 82, 0.12);
+    color: #ff5252;
+}
+
+
+/* Mobile */
+
+@media (max-width: 767px) {
+
+    .attendance-row {
+        flex-wrap: wrap;
+        padding: 15px 5px;
+    }
+
+    .student-number {
+        width: 35px;
+    }
+
+    .student-info {
+        width: calc(100% - 35px);
+        flex: none;
+    }
+
+    .attendance-status {
+        width: 100%;
+        margin-top: 15px;
+        justify-content: flex-start;
+        padding-left: 35px;
+    }
+
+    .attendance-option span {
+        padding: 8px 14px;
+    }
+
+}
+
+
+/* attendance summary cards */
+.attendance-summary-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.02);
+    transition: 0.2s ease;
+}
+
+.attendance-summary-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.attendance-summary-card small {
+    color: #999;
+}
+
+.attendance-summary-card h3 {
+    margin: 4px 0 0;
+}
+
+.summary-icon {
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    font-size: 24px;
+}
+
+.summary-icon.total {
+    background: rgba(33, 150, 243, 0.12);
+    color: #2196f3;
+}
+
+.summary-icon.present {
+    background: rgba(0, 200, 83, 0.12);
+    color: #00c853;
+}
+
+.summary-icon.absent {
+    background: rgba(255, 82, 82, 0.12);
+    color: #ff5252;
+}
+
+.summary-icon.percentage {
+    background: rgba(156, 39, 176, 0.12);
+    color: #9c27b0;
+}

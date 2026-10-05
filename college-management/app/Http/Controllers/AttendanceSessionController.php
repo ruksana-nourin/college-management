@@ -84,9 +84,7 @@ class AttendanceSessionController extends Controller
 
         ]);
 
-
         $attendanceSession = AttendanceSession::create($validated);
-
 
         return redirect()
             ->route(
@@ -102,36 +100,117 @@ class AttendanceSessionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(AttendanceSession $attendanceSession)
     {
-        //
+        $attendanceSession->load([
+            'academicSession',
+            'semester',
+            'subject.course',
+            'teacher',
+            'academicClass',
+            'section',
+            'attendanceRecords.student',
+        ]);
+
+        $totalStudents = $attendanceSession->attendanceRecords->count();
+
+        $presentStudents = $attendanceSession->attendanceRecords
+            ->where('status', 'Present')
+            ->count();
+
+        $absentStudents = $attendanceSession->attendanceRecords
+            ->where('status', 'Absent')
+            ->count();
+
+        $attendancePercentage = $totalStudents > 0
+            ? round(($presentStudents / $totalStudents) * 100, 2)
+            : 0;
+
+        return view(
+            'admin.pages.attendance.show',
+            compact(
+                'attendanceSession',
+                'totalStudents',
+                'presentStudents',
+                'absentStudents',
+                'attendancePercentage'
+            )
+        );
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(AttendanceSession $attendanceSession)
     {
-        //
+        $attendanceSession->load([
+            'academicSession',
+            'semester',
+            'subject.course',
+            'teacher',
+            'academicClass',
+            'section',
+            'attendanceRecords.student',
+        ]);
+
+        return view(
+            'admin.pages.attendance.edit',
+            compact('attendanceSession')
+        );
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request,AttendanceSession $attendanceSession) 
     {
-        //
+        $request->validate([
+            'attendance' => 'required|array',
+            'attendance.*' => 'required|in:Present,Absent',
+        ]);
+
+        foreach ($request->attendance as $studentId => $status) {
+
+            AttendanceRecord::updateOrCreate(
+                [
+                    'attendance_session_id' => $attendanceSession->id,
+                    'student_id' => $studentId,
+                ],
+                [
+                    'status' => $status,
+                ]
+            );
+        }
+
+        return redirect()
+            ->route(
+                'attendance-sessions.show',
+                $attendanceSession->id
+            )
+            ->with(
+                'success',
+                'Attendance updated successfully.'
+            );
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        //
-    }
+    public function destroy(AttendanceSession $attendanceSession)
+{
+    // Delete all attendance records first
+    $attendanceSession->attendanceRecords()->delete();
 
+    // Delete attendance session
+    $attendanceSession->delete();
 
+    return redirect()
+        ->route('attendance-sessions.index')
+        ->with(
+            'success',
+            'Attendance session deleted successfully.'
+        );
+}
     //    get semesters
     public function getSemesters($sessionId)
     {
@@ -145,7 +224,7 @@ class AttendanceSessionController extends Controller
         return response()->json($semesters);
     }
 
-    //get classes
+    // get classes
     public function getClasses($courseId)
     {
         $classes = AcademicClass::where('course_id', $courseId)
@@ -154,6 +233,7 @@ class AttendanceSessionController extends Controller
 
         return response()->json($classes);
     }
+
     public function getSections($classId)
     {
         $sections = Section::where('academic_class_id', $classId)
@@ -185,6 +265,7 @@ class AttendanceSessionController extends Controller
 
         return response()->json($students);
     }
+
     public function takeAttendance(AttendanceSession $attendanceSession)
     {
         $attendanceSession->load([
@@ -196,15 +277,12 @@ class AttendanceSessionController extends Controller
             'section',
         ]);
 
-
-
         $students = Student::where(
             'section_id',
             $attendanceSession->section_id
         )
             ->orderBy('name')
             ->get();
-
 
         return view(
             'admin.pages.attendance.take-attendance',
@@ -214,6 +292,7 @@ class AttendanceSessionController extends Controller
             )
         );
     }
+
     public function storeAttendance(
         Request $request,
         AttendanceSession $attendanceSession
@@ -222,7 +301,6 @@ class AttendanceSessionController extends Controller
             'attendance' => 'required|array',
             'attendance.*' => 'required|in:Present,Absent',
         ]);
-
 
         foreach ($request->attendance as $studentId => $status) {
 
@@ -236,7 +314,6 @@ class AttendanceSessionController extends Controller
                 ]
             );
         }
-
 
         return redirect()
             ->route(

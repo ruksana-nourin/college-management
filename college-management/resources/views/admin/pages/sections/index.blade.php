@@ -96,7 +96,7 @@
                                                 </td>
 
                                                 <td>
-                                                    {{ $item->academicClass->course->name }}
+                                                    {{ $item->academicClass->course->name ?? 'N/A'  }}
                                                 </td>
 
                                                 <td>

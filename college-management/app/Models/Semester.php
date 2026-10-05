@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\FeeStructure;
 
 #[Fillable([
     'academic_session_id',
@@ -30,12 +29,19 @@ class Semester extends Model
     {
         return $this->belongsTo(AcademicSession::class);
     }
+
     public function feeStructures()
     {
         return $this->hasMany(FeeStructure::class);
     }
+
     public function feePayments()
     {
         return $this->hasMany(FeePayment::class);
+    }
+
+    public function exams()
+    {
+        return $this->hasMany(Exam::class);
     }
 }

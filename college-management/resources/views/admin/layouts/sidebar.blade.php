@@ -72,10 +72,10 @@
         </li>
 
         {{-- Attendance --}}
-        <li class="nav-item menu-items {{ request()->routeIs('attendance-sessions.*') ? 'active' : '' }}">
+        <li class="nav-item menu-items {{ request()->routeIs(['attendance-sessions.*','attendance.report']) ? 'active' : '' }}">
 
             <a class="nav-link" data-toggle="collapse" href="#attendanceMenus"
-                aria-expanded="{{ request()->routeIs('attendance-sessions.*') ? 'true' : 'false' }}"
+                aria-expanded="{{ request()->routeIs(['attendance-sessions.*','attendance.report']) ? 'true' : 'false' }}"
                 aria-controls="attendanceMenus">
 
                 <span class="menu-icon">
@@ -86,7 +86,7 @@
                 <i class="menu-arrow"></i>
             </a>
 
-            <div class="collapse {{ request()->routeIs('attendance-sessions.*') ? 'show' : '' }}" id="attendanceMenus">
+            <div class="collapse {{ request()->routeIs(['attendance-sessions.*','attendance.report']) ? 'show' : '' }}" id="attendanceMenus">
 
                 <ul class="nav flex-column sub-menu">
 
@@ -102,8 +102,8 @@
                         </a>
                     </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
+                    <li class="nav-item {{ request()->routeIs('attendance.report') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('attendance.report') }}">
                             Attendance Report
                         </a>
                     </li>

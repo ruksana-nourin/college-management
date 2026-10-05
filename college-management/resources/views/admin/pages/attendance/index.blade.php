@@ -4,225 +4,216 @@
 
 @section('content')
 
-<div class="main-panel">
+    <div class="main-panel">
 
-    <div class="content-wrapper">
+        <div class="content-wrapper">
 
-        <div class="page-header">
-            <h3 class="page-title">Attendance</h3>
-        </div>
+            <div class="page-header">
+                <h3 class="page-title">Attendance</h3>
+            </div>
 
-        <div class="row">
+            <div class="row">
 
-            <div class="col-12 grid-margin stretch-card">
+                <div class="col-12 grid-margin stretch-card">
 
-                <div class="card">
+                    <div class="card">
 
-                    <div class="card-body">
+                        <div class="card-body">
 
-                        <x-admin.phead
-                            title="Attendance"
-                            subtitle="Manage student attendance from here.">
+                            <x-admin.phead title="Attendance" subtitle="Manage student attendance from here.">
 
-                            <a href="{{ route('attendance-sessions.create') }}"
-                                class="btn btn-success btn-rounded btn-fw">
+                                <a href="{{ route('attendance-sessions.create') }}"
+                                    class="btn btn-success btn-rounded btn-fw">
 
-                                <i class="mdi mdi-plus"></i>
+                                    <i class="mdi mdi-plus"></i>
 
-                                Take Attendance
+                                    Take Attendance
 
-                            </a>
+                                </a>
 
-                        </x-admin.phead>
+                            </x-admin.phead>
 
 
-                        @if (session('success'))
+                            @if (session('success'))
 
-                            <div class="alert alert-success alert-dismissible fade show"
-                                role="alert">
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
 
-                                {{ session('success') }}
+                                    {{ session('success') }}
 
-                                <button type="button"
-                                    class="close"
-                                    data-dismiss="alert"
-                                    aria-label="Close">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
 
-                                    <span aria-hidden="true">
-                                        &times;
-                                    </span>
+                                        <span aria-hidden="true">
+                                            &times;
+                                        </span>
 
-                                </button>
+                                    </button>
 
-                            </div>
+                                </div>
 
-                        @endif
+                            @endif
 
 
-                        <div class="input-group w-25 mb-3">
+                            <div class="input-group w-25 mb-3">
 
-                            <input type="text"
-                                class="form-control"
-                                placeholder="Search...">
+                                <input type="text" class="form-control" placeholder="Search...">
 
-                            <div class="input-group-append">
+                                <div class="input-group-append">
 
-                                <button class="btn btn-outline-primary"
-                                    type="button">
+                                    <button class="btn btn-outline-primary" type="button">
 
-                                    <i class="mdi mdi-magnify"></i>
+                                        <i class="mdi mdi-magnify"></i>
 
-                                </button>
+                                    </button>
+
+                                </div>
 
                             </div>
 
-                        </div>
 
+                            <div class="table-responsive">
 
-                        <div class="table-responsive">
+                                <table class="table table-hover">
 
-                            <table class="table table-hover">
-
-                                <thead>
-
-                                    <tr>
-
-                                        <th>ID.</th>
-
-                                        <th>Date</th>
-
-                                        <th>Subject</th>
-
-                                        <th>Teacher</th>
-
-                                        <th>Class</th>
-
-                                        <th>Section</th>
-
-                                        <th>Session</th>
-
-                                        <th>Semester</th>
-
-                                        <th class="text-center">
-                                            Actions
-                                        </th>
-
-                                    </tr>
-
-                                </thead>
-
-
-                                <tbody>
-
-                                    @forelse ($attendanceSessions as $item)
+                                    <thead>
 
                                         <tr>
 
-                                            <td>
-                                                {{ $item->id }}
-                                            </td>
+                                            <th>ID.</th>
 
+                                            <th>Date</th>
 
-                                            <td>
-                                                {{ $item->attendance_date->format('d M, Y') }}
-                                            </td>
+                                            <th>Subject</th>
 
+                                            <th>Teacher</th>
 
-                                            <td>
-                                                {{ $item->subject->name ?? 'N/A' }}
-                                            </td>
+                                            <th>Class</th>
 
+                                            <th>Section</th>
 
-                                            <td>
-                                                {{ $item->teacher->name ?? 'N/A' }}
-                                            </td>
+                                            <th>Session</th>
 
+                                            <th>Semester</th>
 
-                                            <td>
-                                                {{ $item->academicClass->name ?? 'N/A' }}
-                                            </td>
-
-
-                                            <td>
-
-                                                <label class="badge badge-primary btn-rounded">
-
-                                                    {{ $item->section->name ?? 'N/A' }}
-
-                                                </label>
-
-                                            </td>
-
-
-                                            <td>
-                                                {{ $item->academicSession->name ?? 'N/A' }}
-                                            </td>
-
-
-                                            <td>
-                                                {{ $item->semester->name ?? 'N/A' }}
-                                            </td>
-
-
-                                            <td class="text-center">
-
-                                                {{-- View --}}
-                                                <a href="{{ route('attendance-sessions.show', $item->id) }}"
-                                                    class="btn btn-sm btn-outline-info">
-
-                                                    <i class="mdi mdi-eye"></i>
-
-                                                </a>
-
-
-                                                {{-- Edit --}}
-                                                <a href="{{ route('attendance-sessions.edit', $item->id) }}"
-                                                    class="btn btn-sm btn-outline-primary">
-
-                                                    <i class="mdi mdi-pencil"></i>
-
-                                                </a>
-
-
-                                                {{-- Delete --}}
-                                                <button type="button"
-                                                    class="btn btn-sm btn-outline-danger delete"
-                                                    data-id="{{ $item->id }}"
-                                                    data-name="{{ $item->subject->name ?? 'Attendance' }}"
-                                                    data-toggle="modal"
-                                                    data-target="#modalDelete">
-
-                                                    <i class="mdi mdi-delete"></i>
-
-                                                </button>
-
-                                            </td>
+                                            <th class="text-center">
+                                                Actions
+                                            </th>
 
                                         </tr>
 
-                                    @empty
-
-                                        <tr>
-
-                                            <td colspan="9"
-                                                class="text-center">
-
-                                                No attendance records found.
-
-                                            </td>
-
-                                        </tr>
-
-                                    @endforelse
-
-                                </tbody>
-
-                            </table>
+                                    </thead>
 
 
-                            <div class="pagination-wrapper">
+                                    <tbody>
 
-                                {{ $attendanceSessions->links() }}
+                                        @forelse ($attendanceSessions as $item)
+
+                                            <tr>
+
+                                                <td>
+                                                    {{ $item->id }}
+                                                </td>
+
+
+                                                <td>
+                                                    {{ $item->attendance_date->format('d M, Y') }}
+                                                </td>
+
+
+                                                <td>
+                                                    {{ $item->subject->name ?? 'N/A' }}
+                                                </td>
+
+
+                                                <td>
+                                                    {{ $item->teacher->name ?? 'N/A' }}
+                                                </td>
+
+
+                                                <td>
+                                                    {{ $item->academicClass->name ?? 'N/A' }}
+                                                </td>
+
+
+                                                <td>
+
+                                                    <label class="badge badge-primary btn-rounded">
+
+                                                        {{ $item->section->name ?? 'N/A' }}
+
+                                                    </label>
+
+                                                </td>
+
+
+                                                <td>
+                                                    {{ $item->academicSession->name ?? 'N/A' }}
+                                                </td>
+
+
+                                                <td>
+                                                    {{ $item->semester->name ?? 'N/A' }}
+                                                </td>
+
+
+                                                <td class="text-center">
+
+                                                    {{-- View --}}
+                                                    <a href="{{ route('attendance-sessions.show', $item->id) }}"
+                                                        class="btn btn-sm btn-outline-info" title="View Attendance">
+
+                                                        <i class="mdi mdi-eye"></i>
+
+                                                    </a>
+
+
+                                                    {{-- Edit --}}
+                                                    <a href="{{ route('attendance-sessions.edit', $item->id) }}"
+                                                        class="btn btn-sm btn-outline-primary">
+
+                                                        <i class="mdi mdi-pencil"></i>
+
+                                                    </a>
+
+
+                                                    {{-- Delete --}}
+                                                    <button type="button" class="btn btn-sm btn-outline-danger delete"
+                                                        data-id="{{ $item->id }}"
+                                                        data-name="{{ $item->subject->name ?? 'Attendance Session' }}"
+                                                        data-toggle="modal" data-target="#modalDelete"
+                                                        title="Delete Attendance">
+
+                                                        <i class="mdi mdi-delete"></i>
+
+                                                    </button>
+
+                                                </td>
+
+                                            </tr>
+
+                                        @empty
+
+                                            <tr>
+
+                                                <td colspan="9" class="text-center">
+
+                                                    No attendance records found.
+
+                                                </td>
+
+                                            </tr>
+
+                                        @endforelse
+
+                                    </tbody>
+
+                                </table>
+
+
+                                <div class="pagination-wrapper">
+
+                                    {{ $attendanceSessions->links() }}
+
+                                </div>
 
                             </div>
 
@@ -238,90 +229,85 @@
 
     </div>
 
-</div>
+
+    {{-- Delete Modal --}}
+
+    <x-admin.modal id="modalDelete" title="Delete Attendance">
+
+        <div class="text-center">
+
+            <i class="bi bi-trash fs-1 text-danger"></i>
+
+            <p class="mt-2">
+
+                Are you sure you want to delete this attendance?
+
+            </p>
 
 
-{{-- Delete Modal --}}
+            <span class="name fw-bold badge border border-danger text-danger py-2 px-3">
 
-<x-admin.modal id="modalDelete" title="Delete Attendance">
+                Attendance
 
-    <div class="text-center">
-
-        <i class="bi bi-trash fs-1 text-danger"></i>
-
-        <p class="mt-2">
-
-            Are you sure you want to delete this attendance?
-
-        </p>
+            </span>
 
 
-        <span class="name fw-bold badge border border-danger text-danger py-2 px-3">
-
-            Attendance
-
-        </span>
+            <hr>
 
 
-        <hr>
+            <form method="POST">
+
+                @csrf
+                @method('DELETE')
 
 
-        <form method="POST">
+                <button type="button" class="btn btn-light px-4" data-dismiss="modal">
 
-            @csrf
-            @method('DELETE')
+                    Cancel
 
-
-            <button type="button"
-                class="btn btn-light px-4"
-                data-dismiss="modal">
-
-                Cancel
-
-            </button>
+                </button>
 
 
-            <button type="submit"
-                class="btn btn-danger px-4">
+                <button type="submit" class="btn btn-danger px-4">
 
-                Delete
+                    Delete
 
-            </button>
+                </button>
 
-        </form>
+            </form>
 
-    </div>
+        </div>
 
-</x-admin.modal>
+    </x-admin.modal>
 
 @endsection
 
 
 @section('scripts')
 
-<script>
+    <script>
 
-    document.querySelectorAll('.delete').forEach(button => {
+        document.querySelectorAll('.delete').forEach(button => {
 
-        button.addEventListener('click', function() {
+            button.addEventListener('click', function () {
 
-            let id = this.dataset.id;
+                let id = this.dataset.id;
 
-            let name = this.dataset.name;
-
-
-            document.querySelector('#modalDelete .name')
-                .innerText = name;
+                let name = this.dataset.name;
 
 
-            document.querySelector('#modalDelete form').action =
-                `{{ route('attendance-sessions.destroy', ['attendance_session' => ':id']) }}`
-                .replace(':id', id);
+                document.querySelector('#modalDelete .name')
+                    .innerText = name;
+
+
+                document.querySelector('#modalDelete form').action =
+                    `{{ route('attendance-sessions.destroy', ['attendance_session' => ':id']) }}`
+                        .replace(':id', id);
+
+            });
 
         });
 
-    });
-
-</script>
+    </script>
 
 @endsection

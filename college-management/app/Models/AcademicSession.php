@@ -77,4 +77,8 @@ class AcademicSession extends Model
             AttendanceRecord::class
         );
     }
+    public function exams()
+    {
+        return $this->hasMany(Exam::class);
+    }
 }

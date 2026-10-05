@@ -1,4 +1,5 @@
 @extends('admin.layouts.master')
+@section('title', 'Take Attendance')
 
 @section('content')
 
@@ -165,176 +166,207 @@
                             @csrf
 
 
-                            <div class="d-flex justify-content-between align-items-center mb-3">
+                            {{-- Student Attendance --}}
+<div class="card mt-4">
+    <div class="card-body">
 
-                                <h4 class="card-title mb-0">
-                                    Student Attendance
-                                </h4>
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-                                <button
-                                    type="button"
-                                    id="markAllPresent"
-                                    class="btn btn-outline-success btn-sm">
+            <div>
+                <h4 class="card-title mb-1">
+                    <i class="mdi mdi-account-check text-primary"></i>
+                    Student Attendance
+                </h4>
 
-                                    <i class="mdi mdi-check-all"></i>
+                <p class="text-muted mb-0">
+                    Mark attendance for each student
+                </p>
+            </div>
 
-                                    Mark All Present
+            <button type="button"
+                id="markAllPresent"
+                class="btn btn-outline-success btn-rounded">
+                <i class="mdi mdi-check-all"></i>
+                Mark All Present
+            </button>
 
-                                </button>
+        </div>
 
-                            </div>
 
+        {{-- Attendance Summary --}}
+        <div class="row mb-4">
 
-                            <div class="table-responsive">
+            <div class="col-lg-4 col-md-4 col-12 mb-2">
+                <div class="attendance-summary total">
+                    <div class="summary-icon">
+                        <i class="mdi mdi-account-group"></i>
+                    </div>
 
-                                <table class="table table-hover">
+                    <div>
+                        <small>Total Students</small>
+                        <h4 id="totalStudents">
+                            {{ $students->count() }}
+                        </h4>
+                    </div>
+                </div>
+            </div>
 
-                                    <thead>
 
-                                        <tr>
+            <div class="col-lg-4 col-md-4 col-12 mb-2">
+                <div class="attendance-summary present">
+                    <div class="summary-icon">
+                        <i class="mdi mdi-check-circle"></i>
+                    </div>
 
-                                            <th width="60">
-                                                #
-                                            </th>
+                    <div>
+                        <small>Present</small>
+                        <h4 id="presentCount">0</h4>
+                    </div>
+                </div>
+            </div>
 
-                                            <th>
-                                                Student
-                                            </th>
 
-                                            <th width="250" class="text-center">
-                                                Attendance
-                                            </th>
+            <div class="col-lg-4 col-md-4 col-12 mb-2">
+                <div class="attendance-summary absent">
+                    <div class="summary-icon">
+                        <i class="mdi mdi-close-circle"></i>
+                    </div>
 
-                                        </tr>
+                    <div>
+                        <small>Absent</small>
+                        <h4 id="absentCount">0</h4>
+                    </div>
+                </div>
+            </div>
 
-                                    </thead>
+        </div>
 
 
-                                    <tbody>
+        {{-- Table Header --}}
+        <div class="attendance-header d-none d-md-flex">
 
-                                        @foreach ($students as $index => $student)
+            <div class="student-number">
+                #
+            </div>
 
-                                            <tr>
+            <div class="student-info">
+                Student
+            </div>
 
-                                                <td>
-                                                    {{ $index + 1 }}
-                                                </td>
+            <div class="attendance-status">
+                Attendance
+            </div>
 
+        </div>
 
-                                                <td>
 
-                                                    <div class="d-flex align-items-center">
+        {{-- Students --}}
+        <div class="attendance-list">
 
-                                                        @if ($student->image)
+            @foreach ($students as $index => $student)
 
-                                                            <img
-                                                                src="{{ asset($student->image) }}"
-                                                                width="42"
-                                                                height="42"
-                                                                class="rounded-circle mr-3"
-                                                            >
+                <div class="attendance-row">
 
-                                                        @endif
+                    {{-- Number --}}
+                    <div class="student-number">
+                        {{ $index + 1 }}
+                    </div>
 
 
-                                                        <div>
+                    {{-- Student --}}
+                    <div class="student-info">
 
-                                                            <div class="font-weight-bold">
+                        <div class="student-avatar">
 
-                                                                {{ $student->name }}
+                            @if ($student->image)
+                                <img src="{{ asset($student->image) }}"
+                                    alt="{{ $student->name }}">
+                            @else
+                                <div class="avatar-placeholder">
+                                    <i class="mdi mdi-account"></i>
+                                </div>
+                            @endif
 
-                                                            </div>
+                        </div>
 
 
-                                                            <small class="text-muted">
+                        <div class="student-details">
 
-                                                                {{ $student->student_id }}
+                            <h6>
+                                {{ $student->name }}
+                            </h6>
 
-                                                            </small>
+                            <small>
+                                ID: {{ $student->student_id }}
+                            </small>
 
-                                                        </div>
+                        </div>
 
-                                                    </div>
+                    </div>
 
-                                                </td>
 
+                    {{-- Attendance --}}
+                    <div class="attendance-status">
 
-                                                <td class="text-center">
+                        <label class="attendance-option present-option">
 
-                                                    <div class="attendance-toggle">
+                            <input type="radio"
+                                name="attendance[{{ $student->id }}]"
+                                value="Present"
+                                class="attendance-radio"
+                                data-status="present"
+                                checked>
 
-                                                        <input
-                                                            type="radio"
-                                                            name="attendance[{{ $student->id }}]"
-                                                            id="present_{{ $student->id }}"
-                                                            value="Present"
-                                                            checked
-                                                        >
+                            <span>
+                                <i class="mdi mdi-check"></i>
+                                Present
+                            </span>
 
-                                                        <label
-                                                            for="present_{{ $student->id }}"
-                                                            class="present-btn"
-                                                        >
+                        </label>
 
-                                                            <i class="mdi mdi-check"></i>
-                                                            Present
 
-                                                        </label>
+                        <label class="attendance-option absent-option">
 
+                            <input type="radio"
+                                name="attendance[{{ $student->id }}]"
+                                value="Absent"
+                                class="attendance-radio"
+                                data-status="absent">
 
-                                                        <input
-                                                            type="radio"
-                                                            name="attendance[{{ $student->id }}]"
-                                                            id="absent_{{ $student->id }}"
-                                                            value="Absent"
-                                                        >
+                            <span>
+                                <i class="mdi mdi-close"></i>
+                                Absent
+                            </span>
 
-                                                        <label
-                                                            for="absent_{{ $student->id }}"
-                                                            class="absent-btn"
-                                                        >
+                        </label>
 
-                                                            <i class="mdi mdi-close"></i>
-                                                            Absent
+                    </div>
 
-                                                        </label>
+                </div>
 
-                                                    </div>
+            @endforeach
 
-                                                </td>
+        </div>
 
-                                            </tr>
 
-                                        @endforeach
+        {{-- Buttons --}}
+        <div class="mt-4">
 
-                                    </tbody>
+            <button type="submit"
+                class="btn btn-primary btn-lg">
+                <i class="mdi mdi-content-save"></i>
+                Save Attendance
+            </button>
 
-                                </table>
+            <a href="{{ route('attendance-sessions.index') }}"
+                class="btn btn-dark btn-lg">
+                Cancel
+            </a>
 
-                            </div>
+        </div>
 
-
-                            <div class="mt-4">
-
-                                <button
-                                    type="submit"
-                                    class="btn btn-primary">
-
-                                    <i class="mdi mdi-content-save"></i>
-
-                                    Save Attendance
-
-                                </button>
-
-                                <a
-                                    href="{{ route('attendance-sessions.index') }}"
-                                    class="btn btn-dark">
-
-                                    Cancel
-
-                                </a>
-
-                            </div>
+    </div>
+</div>
 
                         </form>
 
@@ -364,6 +396,38 @@
         );
 
     });
+
+    function updateAttendanceCount() {
+
+    let total = $('.attendance-radio:checked').length;
+
+    let present = $('.attendance-radio:checked[value="Present"]').length;
+
+    let absent = $('.attendance-radio:checked[value="Absent"]').length;
+
+    $('#totalStudents').text(total);
+    $('#presentCount').text(present);
+    $('#absentCount').text(absent);
+}
+
+
+$(document).on('change', '.attendance-radio', function() {
+
+    updateAttendanceCount();
+
+});
+
+
+$('#markAllPresent').on('click', function() {
+
+    $('.present-option input').prop('checked', true);
+
+    updateAttendanceCount();
+
+});
+
+
+updateAttendanceCount();
 
 </script>
 

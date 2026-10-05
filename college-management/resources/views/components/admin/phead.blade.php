@@ -4,6 +4,9 @@
         <small>{{ $subtitle }}</small>
 
     </div>
-    {{ $slot }}
+    <div class="phead-actions">
+
+        {{ $slot }}
+    </div>
 
 </div>

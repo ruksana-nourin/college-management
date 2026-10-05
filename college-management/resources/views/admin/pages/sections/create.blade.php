@@ -62,8 +62,8 @@
                                             {{ old('academic_class_id') == $academicClass->id ? 'selected' : '' }}
                                         >
                                             {{ $academicClass->name }}
-                                            -
-                                            {{ $academicClass->course->name }}
+                                            
+                                            {{ $academicClass->course->name ?? 'N/A'  }}
                                         </option>
                                     @endforeach
                                 </select>
