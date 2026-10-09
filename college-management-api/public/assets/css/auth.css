@@ -1,0 +1,524 @@
+/* =========================================
+   AUTHENTICATION / ERROR PAGES
+   College Management System
+   ========================================= */
+
+.auth-page {
+    min-height: 100vh;
+    background: #10131a;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 15px 30px;
+    position: relative;
+    overflow-x: hidden;
+}
+
+
+/* -----------------------------------------
+   Container
+   ----------------------------------------- */
+
+.auth-page .container {
+    position: relative;
+    z-index: 2;
+}
+
+
+/* -----------------------------------------
+   Brand
+   ----------------------------------------- */
+
+.auth-brand {
+    margin-bottom: 30px;
+}
+
+.auth-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+
+    color: #ffffff;
+    text-decoration: none;
+
+    font-size: 22px;
+    font-weight: 600;
+
+    transition: all 0.2s ease;
+}
+
+.auth-logo:hover {
+    color: #0090ff;
+    text-decoration: none;
+}
+
+.auth-logo-icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #0090ff;
+    color: #ffffff;
+
+    border-radius: 10px;
+
+    font-size: 22px;
+
+    box-shadow: 0 6px 20px rgba(0, 144, 255, 0.25);
+}
+
+
+/* -----------------------------------------
+   Heading
+   ----------------------------------------- */
+
+.auth-heading {
+    margin-bottom: 25px;
+}
+
+.auth-heading h1 {
+    color: #ffffff;
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.auth-heading p {
+    color: #8f96a8;
+    font-size: 14px;
+    margin-bottom: 0;
+}
+
+
+/* -----------------------------------------
+   Main Card
+   ----------------------------------------- */
+
+.auth-card {
+    background: #191c24;
+
+    border: 1px solid #292e38;
+    border-radius: 12px;
+
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.35);
+
+    overflow: hidden;
+
+    transition: all 0.25s ease;
+}
+
+.auth-card:hover {
+    border-color: #343b48;
+}
+
+.auth-card-body {
+    padding: 32px;
+}
+
+
+/* -----------------------------------------
+   Labels
+   ----------------------------------------- */
+
+.auth-card label {
+    color: #e4e7ec;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.auth-card .form-group {
+    margin-bottom: 22px;
+}
+
+
+/* -----------------------------------------
+   Input Group
+   ----------------------------------------- */
+
+.auth-input-group {
+    position: relative;
+}
+
+.auth-input-group > i {
+    position: absolute;
+
+    left: 15px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #7f8797;
+
+    font-size: 18px;
+
+    z-index: 2;
+
+    pointer-events: none;
+}
+
+
+/* -----------------------------------------
+   Input
+   ----------------------------------------- */
+
+.auth-input-group .form-control {
+    height: 48px;
+
+    background: #222630;
+
+    border: 1px solid #303641;
+
+    border-radius: 6px;
+
+    color: #ffffff;
+
+    padding-left: 45px;
+    padding-right: 45px;
+
+    font-size: 14px;
+
+    transition: all 0.2s ease;
+}
+
+.auth-input-group .form-control::placeholder {
+    color: #727b8e;
+}
+
+.auth-input-group .form-control:hover {
+    border-color: #414957;
+}
+
+.auth-input-group .form-control:focus {
+    background: #222630;
+
+    border-color: #0090ff;
+
+    color: #ffffff;
+
+    box-shadow: 0 0 0 3px rgba(0, 144, 255, 0.12);
+}
+
+
+/* -----------------------------------------
+   Forgot Password
+   ----------------------------------------- */
+
+.password-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.password-header a {
+    color: #0090ff;
+    font-size: 13px;
+
+    text-decoration: none;
+
+    transition: color 0.2s ease;
+}
+
+.password-header a:hover {
+    color: #45b1ff;
+}
+
+
+/* -----------------------------------------
+   Password Toggle
+   ----------------------------------------- */
+
+.password-toggle {
+    position: absolute;
+
+    right: 10px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 0;
+    background: transparent;
+
+    color: #7f8797;
+
+    cursor: pointer;
+
+    border-radius: 5px;
+
+    transition: all 0.2s ease;
+}
+
+.password-toggle:hover {
+    color: #ffffff;
+    background: #2b303b;
+}
+
+
+/* -----------------------------------------
+   Remember Me
+   ----------------------------------------- */
+
+.auth-card .form-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.auth-card .form-check-input {
+    margin: 0;
+
+    background-color: #222630;
+
+    border-color: #444b58;
+
+    cursor: pointer;
+}
+
+.auth-card .form-check-input:checked {
+    background-color: #0090ff;
+    border-color: #0090ff;
+}
+
+.auth-card .form-check-label {
+    margin: 0;
+    color: #8f96a8;
+    cursor: pointer;
+}
+
+
+/* -----------------------------------------
+   Login Button
+   ----------------------------------------- */
+
+.auth-login-btn {
+    width: 100%;
+
+    min-height: 48px;
+
+    border-radius: 6px;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    transition: all 0.2s ease;
+}
+
+.auth-login-btn:hover {
+    transform: translateY(-1px);
+
+    box-shadow: 0 8px 20px rgba(0, 144, 255, 0.25);
+}
+
+
+/* -----------------------------------------
+   Divider
+   ----------------------------------------- */
+
+.auth-divider {
+    display: flex;
+    align-items: center;
+
+    margin: 28px 0;
+
+    color: #6f7787;
+
+    font-size: 12px;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: "";
+
+    flex: 1;
+
+    height: 1px;
+
+    background: #2d323c;
+}
+
+.auth-divider span {
+    padding: 0 15px;
+}
+
+
+/* -----------------------------------------
+   Secondary Button
+   ----------------------------------------- */
+
+.auth-secondary-btn {
+    width: 100%;
+
+    min-height: 46px;
+
+    background: #222630;
+
+    border: 1px solid #343a46;
+
+    color: #d5d8df;
+
+    border-radius: 6px;
+
+    transition: all 0.2s ease;
+}
+
+.auth-secondary-btn:hover {
+    background: #292e38;
+
+    border-color: #0090ff;
+
+    color: #ffffff;
+
+    transform: translateY(-1px);
+}
+
+
+/* -----------------------------------------
+   Help
+   ----------------------------------------- */
+
+.auth-help {
+    margin-top: 25px;
+
+    color: #777f90;
+
+    font-size: 13px;
+}
+
+.auth-help a {
+    color: #0090ff;
+
+    text-decoration: none;
+
+    margin-left: 4px;
+}
+
+.auth-help a:hover {
+    color: #45b1ff;
+}
+
+
+/* -----------------------------------------
+   Footer
+   ----------------------------------------- */
+
+.auth-footer {
+    margin-top: 25px;
+
+    color: #626a7a;
+
+    font-size: 12px;
+}
+
+.auth-footer p {
+    margin-bottom: 0;
+}
+
+
+/* =========================================
+   404 PAGE
+   ========================================= */
+
+.error-card {
+    text-align: center;
+}
+
+.error-icon {
+    width: 65px;
+    height: 65px;
+
+    margin: 0 auto 15px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 144, 255, 0.10);
+
+    border: 1px solid rgba(0, 144, 255, 0.20);
+
+    border-radius: 50%;
+
+    color: #0090ff;
+
+    font-size: 28px;
+}
+
+.error-code {
+    color: #ffffff;
+
+    font-size: 82px;
+    line-height: 1;
+
+    font-weight: 700;
+
+    letter-spacing: -3px;
+
+    margin-bottom: 15px;
+}
+
+.error-card h3 {
+    color: #ffffff;
+
+    font-size: 22px;
+    font-weight: 600;
+
+    margin-bottom: 10px;
+}
+
+.error-description {
+    max-width: 430px;
+
+    margin: 0 auto 25px;
+
+    color: #858d9e;
+
+    font-size: 14px;
+
+    line-height: 1.7;
+}
+
+.error-actions .btn {
+    min-height: 45px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+
+/* =========================================
+   Responsive
+   ========================================= */
+
+@media (max-width: 576px) {
+
+    .auth-page {
+        padding: 30px 15px 20px;
+    }
+
+    .auth-heading h1 {
+        font-size: 27px;
+    }
+
+    .auth-card-body {
+        padding: 24px 20px;
+    }
+
+    .auth-logo {
+        font-size: 19px;
+    }
+
+    .error-code {
+        font-size: 65px;
+    }
+
+}

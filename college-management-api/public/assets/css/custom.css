@@ -1,0 +1,617 @@
+.table-hover tbody tr:hover {
+    background-color: #2a2d35 !important;
+}
+
+.table-hover tbody tr:hover td {
+    color: #fff !important;
+}
+
+/* Corona Dark Pagination */
+.pagination-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 25px;
+}
+
+.pagination {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 0;
+}
+
+.pagination .page-item .page-link {
+    min-width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 10px;
+    border: 1px solid #2c2f3a;
+    border-radius: 6px !important;
+
+    background: #191c24;
+    color: #6c7293;
+
+    font-size: 13px;
+    text-decoration: none;
+
+    transition: all 0.2s ease;
+}
+
+/* Hover */
+.pagination .page-item .page-link:hover {
+    background: #0090e7;
+    border-color: #0090e7;
+    color: #ffffff;
+}
+
+/* Active */
+.pagination .page-item.active .page-link {
+    background: #0090e7;
+    border-color: #0090e7;
+    color: #ffffff;
+}
+
+/* Disabled */
+.pagination .page-item.disabled .page-link {
+    background: #191c24;
+    border-color: #2c2f3a;
+    color: #444856;
+    cursor: not-allowed;
+}
+
+/* Remove focus outline */
+.pagination .page-link:focus {
+    box-shadow: none;
+}
+
+.user-avatar {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: #0090e7;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-avatar i {
+    font-size: 75px;
+    color: #fff;
+}
+
+.user-profile h4 {
+    color: #ffffff;
+}
+
+.user-info-box {
+    background: #191c24;
+    border: 1px solid #2c2f3a;
+    border-radius: 6px;
+    padding: 18px 20px;
+    min-height: 90px;
+}
+
+.info-label {
+    display: block;
+    color: #6c7293;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.info-label i {
+    margin-right: 5px;
+}
+
+.info-value {
+    color: #ffffff;
+    margin: 0;
+    font-size: 15px;
+}
+
+/* =========================================
+   FORM TEXT VISIBILITY - DARK THEME
+   ========================================= */
+
+/* Text input, textarea and select */
+.form-control,
+.form-select {
+    color: #f5f7fb !important;
+}
+
+/* When user types/fills the input */
+.form-control:focus,
+.form-select:focus {
+    color: #ffffff !important;
+}
+
+/* Placeholder */
+.form-control::placeholder {
+    color: #8f96a8 !important;
+    opacity: 1;
+}
+
+/* Select selected value */
+.form-select {
+    color: #f5f7fb !important;
+}
+
+/* Select options */
+.form-select option {
+    background-color: #191c24;
+    color: #f5f7fb;
+}
+
+/* Labels */
+.form-label,
+label {
+    color: #e4e7ec;
+}
+
+/* Disabled input */
+.form-control:disabled,
+.form-select:disabled {
+    color: #777f90 !important;
+}
+
+.form-control,
+.form-select {
+    background-color: #191c24 !important;
+    border: 1px solid #343a46 !important;
+}
+
+.form-control:hover,
+.form-select:hover {
+    border-color: #4a5261 !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: #1d212b !important;
+    border-color: #0090ff !important;
+    /* color: #ffffff !important; */
+    box-shadow: 0 0 0 2px rgba(0, 144, 255, 0.12) !important;
+}
+
+
+/* =========================================
+   BRIGHT TEXT - CORONA DARK THEME
+   ========================================= */
+
+/* Main body text */
+body {
+    color: #e8eaf0;
+}
+
+/* Card titles */
+.card-title,
+.page-title {
+    color: #ffffff !important;
+}
+
+/* Normal paragraph / description */
+.card-description,
+p {
+    color: #bfc5d2 !important;
+}
+
+/* Labels */
+label,
+.form-label {
+    color: #e6e9ef !important;
+}
+
+/* Input text */
+.form-control,
+.form-select,
+textarea {
+    color: #f5f6fa !important;
+}
+
+/* Placeholder */
+.form-control::placeholder,
+textarea::placeholder {
+    color: #929aaa !important;
+    opacity: 1;
+}
+
+/* Table text */
+.table td,
+.table th {
+    color: #e5e8ee !important;
+}
+
+/* Table heading */
+.table thead th {
+    color: #ffffff !important;
+}
+
+/* Small muted text */
+.text-muted {
+    color: #aeb5c3 !important;
+}
+
+
+/* =========================================
+   LINKS
+   ========================================= */
+
+a {
+    color: #bfc5d2;
+    transition: all 0.2s ease;
+}
+
+/* a:hover {
+    color: #0090ff !important;
+} */
+
+
+/* =========================================
+   SIDEBAR
+   ========================================= */
+
+.sidebar .nav .nav-item .nav-link {
+    color: #c8cdd7 !important;
+}
+
+.sidebar .nav .nav-item .nav-link .menu-title {
+    color: #c8cdd7 !important;
+}
+
+.sidebar .nav .nav-item .nav-link i {
+    color: #aeb5c3;
+}
+
+/* Sidebar hover */
+.sidebar .nav .nav-item .nav-link:hover,
+.sidebar .nav .nav-item .nav-link:hover .menu-title {
+    color: #ffffff !important;
+}
+
+
+/* =========================================
+   FORM
+   ========================================= */
+
+.form-control,
+.form-select {
+    background-color: #191c24 !important;
+    border-color: #343a46 !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    color: #ffffff !important;
+    border-color: #0090ff !important;
+}
+
+
+/* Select options */
+.form-select option {
+    background: #191c24;
+    color: #ffffff;
+}
+
+
+/* =========================================
+   USER DETAILS
+   ========================================= */
+
+.info-label {
+    color: #aeb5c3 !important;
+}
+
+.info-value {
+    color: #ffffff !important;
+}
+
+
+/* =========================================
+   BUTTON TEXT
+   ========================================= */
+
+.btn {
+    font-weight: 500;
+}
+
+.btn-dark {
+    color: #e9ebf0 !important;
+}
+
+.btn-dark:hover {
+    color: #ffffff !important;
+}
+
+/* role buttons */
+/* Role Badges */
+
+.role-admin {
+    background-color: #dc3545 !important;
+    color: #ffffff !important;
+}
+
+.role-teacher {
+    background-color: #0090ff !important;
+    color: #ffffff !important;
+}
+
+.role-student {
+    background-color: #00d25b !important;
+    color: #ffffff !important;
+}
+
+.role-default {
+    background-color: #6c7293 !important;
+    color: #ffffff !important;
+}
+
+/* take attendance */
+
+/* Attendance Header */
+
+.attendance-header {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font-weight: 600;
+}
+
+
+/* Attendance Row */
+
+.attendance-row {
+    display: flex;
+    align-items: center;
+    min-height: 85px;
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    transition: 0.2s ease;
+}
+
+.attendance-row:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+
+/* Number */
+
+.student-number {
+    width: 55px;
+    font-weight: 600;
+}
+
+
+/* Student */
+
+.student-info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+
+.student-avatar img,
+.avatar-placeholder {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+}
+
+
+.student-avatar img {
+    object-fit: cover;
+}
+
+
+.avatar-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.08);
+    font-size: 24px;
+}
+
+
+.student-details h6 {
+    margin: 0 0 4px;
+    font-size: 15px;
+}
+
+
+.student-details small {
+    color: #9a9a9a;
+}
+
+
+/* Attendance */
+
+.attendance-status {
+    width: 300px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+
+.attendance-option {
+    cursor: pointer;
+    margin: 0;
+}
+
+
+.attendance-option input {
+    display: none;
+}
+
+
+.attendance-option span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    transition: 0.2s ease;
+    font-size: 14px;
+}
+
+
+.present-option input:checked+span {
+    background: rgba(0, 200, 83, 0.12);
+    border-color: #00c853;
+    color: #00c853;
+}
+
+
+.absent-option input:checked+span {
+    background: rgba(255, 82, 82, 0.12);
+    border-color: #ff5252;
+    color: #ff5252;
+}
+
+
+/* Summary */
+
+.attendance-summary {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 18px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+
+.attendance-summary .summary-icon {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 22px;
+}
+
+
+.attendance-summary small {
+    color: #999;
+}
+
+
+.attendance-summary h4 {
+    margin: 3px 0 0;
+}
+
+
+.attendance-summary.total .summary-icon {
+    background: rgba(33, 150, 243, 0.12);
+    color: #2196f3;
+}
+
+
+.attendance-summary.present .summary-icon {
+    background: rgba(0, 200, 83, 0.12);
+    color: #00c853;
+}
+
+
+.attendance-summary.absent .summary-icon {
+    background: rgba(255, 82, 82, 0.12);
+    color: #ff5252;
+}
+
+
+/* Mobile */
+
+@media (max-width: 767px) {
+
+    .attendance-row {
+        flex-wrap: wrap;
+        padding: 15px 5px;
+    }
+
+    .student-number {
+        width: 35px;
+    }
+
+    .student-info {
+        width: calc(100% - 35px);
+        flex: none;
+    }
+
+    .attendance-status {
+        width: 100%;
+        margin-top: 15px;
+        justify-content: flex-start;
+        padding-left: 35px;
+    }
+
+    .attendance-option span {
+        padding: 8px 14px;
+    }
+
+}
+
+
+/* attendance summary cards */
+.attendance-summary-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.02);
+    transition: 0.2s ease;
+}
+
+.attendance-summary-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.attendance-summary-card small {
+    color: #999;
+}
+
+.attendance-summary-card h3 {
+    margin: 4px 0 0;
+}
+
+.summary-icon {
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    font-size: 24px;
+}
+
+.summary-icon.total {
+    background: rgba(33, 150, 243, 0.12);
+    color: #2196f3;
+}
+
+.summary-icon.present {
+    background: rgba(0, 200, 83, 0.12);
+    color: #00c853;
+}
+
+.summary-icon.absent {
+    background: rgba(255, 82, 82, 0.12);
+    color: #ff5252;
+}
+
+.summary-icon.percentage {
+    background: rgba(156, 39, 176, 0.12);
+    color: #9c27b0;
+}
