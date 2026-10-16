@@ -1,245 +1,259 @@
 <?php
-
 namespace App\Http\Controllers;
 
+
+use App\Models\AcademicSession;
 use App\Models\FeeCategory;
+use App\Models\FeePaymentDetail;
 use App\Models\FeeStructure;
 use App\Models\Semester;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class FeeStructureController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display all fee structures.
      */
     public function index()
     {
         $feeStructures = FeeStructure::with([
             'semester.academicSession',
             'feeCategory',
-        ])->latest()->get();
+        ])
+            ->latest()
+            // ->paginate(10);
+            ->get();
 
-        return view(
-            'admin.pages.fee-structures.index',
-            compact('feeStructures')
-        );
+        return response()->json([
+            'success' => true,
+            'fee_structures' => $feeStructures,
+        ]);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Data required for the React form.
      */
-    public function create()
+    public function formData()
     {
-        $semesters = Semester::with('academicSession')
+        return response()->json([
+            'success' => true,
+            'academic_sessions' => AcademicSession::orderBy('id')->get(),
+            'semesters' => Semester::with('academicSession')
+                ->orderBy('id')
+                ->get(),
+            'fee_categories' => FeeCategory::orderBy('name')->get(),
+        ]);
+    }
+
+    /**
+     * Get semesters belonging to an academic session.
+     */
+    public function getSemesters($academicSessionId)
+    {
+        $sessionExists = AcademicSession::where(
+            'id',
+            $academicSessionId
+        )->exists();
+
+        if (! $sessionExists) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Academic session not found.',
+            ], 404);
+        }
+
+        $semesters = Semester::where(
+            'academic_session_id',
+            $academicSessionId
+        )
             ->orderBy('id')
             ->get();
 
-        $feeCategories = FeeCategory::orderBy('name')
-            ->get();
-
-        return view(
-            'admin.pages.fee-structures.create',
-            compact(
-                'semesters',
-                'feeCategories'
-            )
-        );
+        return response()->json([
+            'success' => true,
+            'semesters' => $semesters,
+        ]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a new fee structure.
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'academic_session_id' => 'required|exists:academic_sessions,id',
-
+        $validated = $request->validate([
+            'academic_session_id' => [
+                'required',
+                'exists:academic_sessions,id',
+            ],
             'semester_id' => [
                 'required',
                 'exists:semesters,id',
-                function ($attribute, $value, $fail) use ($request) {
-
-                    $semester = Semester::find($value);
-
-                    if (
-                        ! $semester ||
-                        $semester->academic_session_id != $request->academic_session_id
-                    ) {
-                        $fail('The selected semester does not belong to the selected academic session.');
-                    }
-                },
+                Rule::exists('semesters', 'id')
+                    ->where(
+                        'academic_session_id',
+                        $request->input('academic_session_id')
+                    ),
             ],
-
-            'fee_category_id' => 'required|exists:fee_categories,id',
-
-            'amount' => 'required|numeric|min:0',
+            'fee_category_id' => [
+                'required',
+                'exists:fee_categories,id',
+            ],
+            'amount' => [
+                'required',
+                'numeric',
+                'min:0',
+            ],
         ]);
 
         $exists = FeeStructure::where(
             'semester_id',
-            $request->semester_id
+            $validated['semester_id']
         )
             ->where(
                 'fee_category_id',
-                $request->fee_category_id
+                $validated['fee_category_id']
             )
             ->exists();
 
         if ($exists) {
-
-            return back()
-                ->withInput()
-                ->with(
-                    'error',
-                    'This fee structure already exists for the selected semester and fee category.'
-                );
+            return response()->json([
+                'success' => false,
+                'message' => 'This fee structure already exists for the selected semester and fee category.',
+            ], 409);
         }
 
-        FeeStructure::create([
-            'semester_id' => $request->semester_id,
-            'fee_category_id' => $request->fee_category_id,
-            'amount' => $request->amount,
+        $feeStructure = FeeStructure::create([
+            'semester_id' => $validated['semester_id'],
+            'fee_category_id' => $validated['fee_category_id'],
+            'amount' => $validated['amount'],
         ]);
 
-        return redirect()
-            ->route('fee-structures.index')
-            ->with(
-                'success',
-                'Fee structure created successfully.'
-            );
+        $feeStructure->load([
+            'semester.academicSession',
+            'feeCategory',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Fee structure created successfully.',
+            'fee_structure' => $feeStructure,
+        ], 201);
     }
 
     /**
-     * Display the specified resource.
+     * Display one fee structure.
      */
     public function show(FeeStructure $feeStructure)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(FeeStructure $feeStructure)
     {
         $feeStructure->load([
             'semester.academicSession',
             'feeCategory',
         ]);
 
-        $semesters = Semester::with('academicSession')
-            ->orderBy('id')
-            ->get();
-
-        $feeCategories = FeeCategory::orderBy('name')
-            ->get();
-
-        return view(
-            'admin.pages.fee-structures.edit',
-            compact(
-                'feeStructure',
-                'semesters',
-                'feeCategories'
-            )
-        );
+        return response()->json([
+            'success' => true,
+            'fee_structure' => $feeStructure,
+        ]);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update a fee structure.
      */
     public function update(
         Request $request,
         FeeStructure $feeStructure
     ) {
-        $request->validate([
-
+        $validated = $request->validate([
             'academic_session_id' => [
                 'required',
                 'exists:academic_sessions,id',
             ],
-
             'semester_id' => [
                 'required',
                 'exists:semesters,id',
-
-                function ($attribute, $value, $fail) use ($request) {
-
-                    $semester = Semester::find($value);
-
-                    if (
-                        ! $semester ||
-                        $semester->academic_session_id != $request->academic_session_id
-                    ) {
-                        $fail(
-                            'The selected semester does not belong to the selected academic session.'
-                        );
-                    }
-                },
+                Rule::exists('semesters', 'id')
+                    ->where(
+                        'academic_session_id',
+                        $request->input('academic_session_id')
+                    ),
             ],
-
             'fee_category_id' => [
                 'required',
                 'exists:fee_categories,id',
-        ],
-
+            ],
             'amount' => [
                 'required',
                 'numeric',
                 'min:0',
-        ],
+            ],
         ]);
 
         $exists = FeeStructure::where(
             'semester_id',
-            $request->semester_id
+            $validated['semester_id']
         )
             ->where(
                 'fee_category_id',
-                $request->fee_category_id
+                $validated['fee_category_id']
             )
-            ->where(
-                'id',
-                '!=',
-                $feeStructure->id
-            )
+            ->where('id', '!=', $feeStructure->id)
             ->exists();
 
         if ($exists) {
-
-            return back()
-                ->withInput()
-                ->with(
-                    'error',
-                    'This fee structure already exists for the selected semester and fee category.'
-                );
+            return response()->json([
+                'success' => false,
+                'message' => 'This fee structure already exists for the selected semester and fee category.',
+            ], 409);
         }
 
         $feeStructure->update([
-            'semester_id' => $request->semester_id,
-            'fee_category_id' => $request->fee_category_id,
-            'amount' => $request->amount,
+            'semester_id' => $validated['semester_id'],
+            'fee_category_id' => $validated['fee_category_id'],
+            'amount' => $validated['amount'],
         ]);
 
-        return redirect()
-            ->route('fee-structures.index')
-            ->with(
-                'success',
-                'Fee structure updated successfully.'
-            );
+        $feeStructure->load([
+            'semester.academicSession',
+            'feeCategory',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Fee structure updated successfully.',
+            'fee_structure' => $feeStructure,
+        ]);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete a fee structure.
      */
     public function destroy(FeeStructure $feeStructure)
     {
+        $hasPayments = FeePaymentDetail::where(
+            'fee_category_id',
+            $feeStructure->fee_category_id
+        )
+            ->whereHas('feePayment', function ($query) use ($feeStructure) {
+                $query->where(
+                    'semester_id',
+                    $feeStructure->semester_id
+                );
+            })
+            ->exists();
+
+        if ($hasPayments) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This fee structure has associated payments and cannot be deleted.',
+            ], 409);
+        }
+
         $feeStructure->delete();
 
-        return redirect()
-            ->route('fee-structures.index')
-            ->with(
-                'success',
-                'Fee structure deleted successfully.'
-            );
+        return response()->json([
+            'success' => true,
+            'message' => 'Fee structure deleted successfully.',
+        ]);
     }
 }

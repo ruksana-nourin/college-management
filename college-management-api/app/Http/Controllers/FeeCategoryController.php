@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\FeeCategory;
+use App\Models\FeePaymentDetail;
+use App\Models\FeeStructure;
 use Illuminate\Http\Request;
 
 class FeeCategoryController extends Controller
@@ -14,36 +16,31 @@ class FeeCategoryController extends Controller
     {
         $feeCategories = FeeCategory::latest()->get();
 
-        return view(
-            'admin.pages.fee-categories.index',
-            compact('feeCategories')
-        );
+        return response()->json([
+            'success' => true,
+            'fee_categories' => $feeCategories
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('admin.pages.fee-categories.create');
-    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $vaildated = $request->validate([
             'name' => 'required|string|min:3|max:255|unique:fee_categories,name',
         ]);
 
-        FeeCategory::create([
-            'name' => $request->name,
+        $feeCategory = FeeCategory::create([
+            'name' => $vaildated['name']
         ]);
 
-        return redirect()
-            ->route('fee-categories.index')
-            ->with('success', 'Fee category created successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Fee category created successfully.',
+            'fee_category' => $feeCategory,
+        ], 201);
     }
 
     /**
@@ -51,47 +48,66 @@ class FeeCategoryController extends Controller
      */
     public function show(FeeCategory $feeCategory)
     {
-        //
+        return response()->json([
+            'success' => true,
+            'fee_category' => $feeCategory,
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(FeeCategory $feeCategory)
-    {
-        return view(
-            'admin.pages.fee-categories.edit',
-            compact('feeCategory')
-        );
-    }
 
     /**
      * Update the specified resource in storage.
      */
+
     public function update(Request $request, FeeCategory $feeCategory)
     {
-        $request->validate([
-            'name' => 'required|string|min:3|max:255|unique:fee_categories,name,' . $feeCategory->id,
+        $validated = $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'min:3',
+                'max:255',
+                'unique:fee_categories,name,' . $feeCategory->id,
+            ],
         ]);
 
-        $feeCategory->update([
-            'name' => $request->name,
-        ]);
+        $feeCategory->update($validated);
 
-        return redirect()
-            ->route('fee-categories.index')
-            ->with('success', 'Fee category updated successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Fee category updated successfully.',
+            'fee_category' => $feeCategory->fresh(),
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
+
     public function destroy(FeeCategory $feeCategory)
     {
+        $usedInStructures = FeeStructure::where(
+            'fee_category_id',
+            $feeCategory->id
+        )->exists();
+
+        $usedInPayments = FeePaymentDetail::where(
+            'fee_category_id',
+            $feeCategory->id
+        )->exists();
+
+        if ($usedInStructures || $usedInPayments) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This fee category is already used in fee structures or payments and cannot be deleted.',
+            ], 409);
+        }
+
         $feeCategory->delete();
 
-        return redirect()
-            ->route('fee-categories.index')
-            ->with('success', 'Fee category deleted successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Fee category deleted successfully.',
+        ]);
     }
 }

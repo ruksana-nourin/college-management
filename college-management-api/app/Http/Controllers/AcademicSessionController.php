@@ -13,10 +13,10 @@ class AcademicSessionController extends Controller
         $academicSessions = AcademicSession::orderBy('id', 'desc')
             ->paginate(10);
 
-        return view(
-            'admin.pages.academic-sessions.index',
-            compact('academicSessions')
-        );
+        response()->json([
+            'success' => true,
+            'academic_sessions' => $academicSessions,
+        ]);
     }
 
     public function create()

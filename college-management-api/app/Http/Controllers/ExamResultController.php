@@ -96,6 +96,9 @@ class ExamResultController extends Controller
      */
     public function store(Request $request)
     {
+        // return response()->json(
+        //     $request->all()
+        // );
         $request->validate([
             'exam_id' => 'required',
             'student_id' => 'required',
